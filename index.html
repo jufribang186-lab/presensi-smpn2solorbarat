@@ -755,7 +755,33 @@ let userRole = localStorage.getItem(KEY_ROLE) || '';
 
 
 function syncGuruDariFirebase(){
+function syncPresensiDariFirebase(){
 
+    presensiRef.on("value",(snapshot)=>{
+
+        const data = snapshot.val();
+
+        if(data){
+
+            dataPresensi = data;
+
+        }else{
+
+            dataPresensi = {};
+
+        }
+
+        localStorage.setItem(
+            KEY_PRESENSI,
+            JSON.stringify(dataPresensi)
+        );
+
+        loadPresensiTanggal();
+        renderRekap();
+
+    });
+
+}
     guruRef.on("value",(snapshot)=>{
 
         const data = snapshot.val();
@@ -802,11 +828,9 @@ function syncGuruDariFirebase(){
     }
 
     syncGuruDariFirebase();
+syncPresensiDariFirebase();
 
 renderDatabase();
-loadPresensiTanggal();
-renderRekap();
-
 });
     /* --- CUSTOM POPUP SYSTEM --- */
     function showAlert(title, msg, type = 'success') {
@@ -1220,6 +1244,7 @@ detail.innerHTML = html;
         });
 
         localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
+        presensiRef.set(dataPresensi);
         showAlert("Tersimpan!", "Data presensi tanggal " + tgl + " berhasil disimpan.", "success");
     }
 
