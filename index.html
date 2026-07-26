@@ -752,8 +752,8 @@ let userRole = localStorage.getItem(KEY_ROLE) || '';
 // FIREBASE REFERENCES
 // ==========================
 
-const guruRef = db.ref("guru");
-const presensiRef = db.ref("presensi");
+
+
 function syncGuruDariFirebase(){
 
     guruRef.on("value",(snapshot)=>{
@@ -764,16 +764,18 @@ function syncGuruDariFirebase(){
 
             dbGuru = data;
 
+            localStorage.setItem(
+                KEY_GURU,
+                JSON.stringify(dbGuru)
+            );
+
         }else{
 
-            dbGuru = [];
+            dbGuru = JSON.parse(
+                localStorage.getItem(KEY_GURU)
+            ) || [];
 
         }
-
-        localStorage.setItem(
-            KEY_GURU,
-            JSON.stringify(dbGuru)
-        );
 
         renderDatabase();
 
@@ -1072,6 +1074,7 @@ detail.innerHTML = html;
         }
 
         localStorage.setItem(KEY_GURU, JSON.stringify(dbGuru));
+        guruRef.set(dbGuru);
         batalEditGuru();
         renderDatabase();
     }
