@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pemantau Kehadiran - SMPN 2 Solor Barat</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #0f172a;
+            --bg: #f1f5f9;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --info: #2563eb;
+            --info-bg: #eff6ff;
+            --border: #cbd5e1;
+            --radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding-bottom: 30px;
+        }
+
+        /* Top Bar Header Mobile */
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            color: white;
+            padding: 18px 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        header h2 {
+            font-size: 0.85rem;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        header p {
+            font-size: 0.75rem;
+            background: rgba(255,255,255,0.15);
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 6px;
+        }
+
+        .container {
+            padding: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tab Menu */
+        .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:15px;
+    background:transparent;
+}
+
+.tab-btn{
+    flex:1;
+    border:none;
+    border-radius:12px;
+    padding:12px 8px;
+    font-size:0.85rem;
+    font-weight:700;
+    color:#fff;
+    cursor:pointer;
+    transition:.25s;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+.tab-btn span{
+    display:block;
+    margin-top:4px;
+    font-size:0.80rem;
+}
+
+.tab-btn{
+    line-height:1.2;
+    font-size:1.3rem;
+}
+.tab-btn:nth-child(1){
+    background:linear-gradient(135deg,#22c55e,#15803d);
+}
+
+.tab-btn:nth-child(2){
+    background:linear-gradient(135deg,#3b82f6,#1d4ed8);
+}
+
+.tab-btn:nth-child(3){
+    background:linear-gradient(135deg,#a855f7,#7e22ce);
+}
+
+.tab-btn:hover{
+    transform:translateY(-2px);
+}
+
+.tab-btn.active{
+    transform:scale(1.05);
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    outline:3px solid rgba(255,255,255,.7);
+}        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Cards & Forms */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        input[type="text"], input[type="password"], input[type="date"], input[type="month"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            background-color: #f8fafc;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background-color: #fff;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        /* List Items (Input Presensi) */
+        .guru-card{
+    background:linear-gradient(145deg,#ffffff,#f8fbff);
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:15px;
+    border:1px solid #dbeafe;
+    box-shadow:
+        0 8px 18px rgba(30,58,138,.10),
+        0 2px 5px rgba(0,0,0,.05);
+    transition:.30s;
+}
+
+.guru-card:hover{
+    transform:translateY(-3px);
+    box-shadow:
+        0 14px 26px rgba(30,58,138,.18),
+        0 4px 10px rgba(0,0,0,.08);
+}
+
+        .guru-name{
+    font-size:1rem;
+    font-weight:800;
+    color:#0f172a;
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:2px dashed #dbeafe;
+    letter-spacing:.3px;
+}
+
+        .status-buttons {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+        .btn-status{
+    padding:10px 2px;
+    border-radius:10px;
+    font-size:0.74rem;
+    font-weight:700;
+    cursor:pointer;
+    text-align:center;
+    border:2px solid transparent;
+    transition:all .25s ease;
+    color:#fff;
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
+}
+
+.btn-status:hover{
+    transform:translateY(-2px);
+}
+/* ===== WARNA DASAR TOMBOL ===== */
+
+.btn-status[data-val="H"]{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:#fff;
+}
+
+.btn-status[data-val="S"]{
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    color:#fff;
+}
+
+.btn-status[data-val="I"]{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:#fff;
+}
+
+.btn-status[data-val="A"]{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:#fff;
+}
+
+.btn-status[data-val="DL"]{
+    background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+    color:#fff;
+}
+
+.btn-status[data-val="B"]{
+    background:linear-gradient(135deg,#7f1d1d,#450a0a);
+    color:#fff;
+}
+        .btn-status.selected{
+    transform:scale(1.08);
+    background:linear-gradient(135deg,#facc15,#eab308) !important;
+    color:#1e293b !important;
+    border:2px solid #ffffff;
+    box-shadow:
+        0 0 0 3px rgba(250,204,21,.45),
+        0 10px 22px rgba(234,179,8,.45);
+    font-weight:800;
+}
+        .apel-check-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f8fafc;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px dashed var(--border);
+            font-size: 0.8rem;
+            color: #334155;
+            cursor: pointer;
+        }
+
+        .apel-check-wrapper input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--danger);
+        }
+        .guru-name{
+    font-weight:700;
+    font-size:1rem;
+    color:#1e3a8a;
+    margin-bottom:12px;
+    text-align:center;
+    padding:10px;
+    background:linear-gradient(90deg,#dbeafe,#eff6ff);
+    border-radius:10px;
+    border:1px solid #bfdbfe;
+    box-shadow:0 2px 5px rgba(0,0,0,.08);
+}
+        /* Rekap Card */
+        .rekap-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 14px;
+            margin-bottom: 10px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .rekap-card.alert-red {
+            border-left-color: var(--danger);
+            background: #fff5f5;
+        }
+
+        .rekap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .rekap-nama {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .rekap-percent {
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .percent-red { background: var(--danger-bg); color: var(--danger); }
+        .percent-green { background: var(--success-bg); color: var(--success); }
+
+        .rekap-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #475569;
+            background: rgba(255,255,255,0.7);
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .btn-wa-mobile {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: #25d366;
+            color: white;
+            text-decoration: none;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-edit-guru {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-delete-guru {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .info-box {
+            font-size: 0.75rem;
+            color: #64748b;
+            line-height: 1.4;
+            background: #e2e8f0;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .info-box {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.4;
+    background: #e2e8f0;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* ================= DASHBOARD RINGKASAN ================= */
+
+.dashboard-summary{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:15px;
+}
+
+.summary-card{
+    border-radius:14px;
+    padding:15px;
+    color:#fff;
+    text-align:center;
+    box-shadow:0 6px 12px rgba(0,0,0,.12);
+}
+
+.summary-card .icon{
+    font-size:28px;
+    margin-bottom:6px;
+}
+
+.summary-card .angka{
+    font-size:28px;
+    font-weight:800;
+    line-height:1;
+}
+
+.summary-card .judul{
+    font-size:.82rem;
+    margin-top:6px;
+    opacity:.95;
+}
+
+.summary-blue{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+
+.summary-green{
+    background:linear-gradient(135deg,#16a34a,#15803d);
+}
+
+.summary-yellow{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+}
+
+.summary-red{
+    background:linear-gradient(135deg,#dc2626,#991b1b);
+}
+
+/* --- CUSTOM MODAL POP-UP STYLES --- */
+
+        /* --- CUSTOM MODAL POP-UP STYLES --- */
+        .modal-overlay{
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center !important;
+    justify-content:center !important;
+
+    width:100vw;
+    height:100vh;
+
+    background:rgba(15,23,42,.6);
+    backdrop-filter:blur(3px);
+
+    z-index:99999;
+
+    opacity:0;
+    visibility:hidden;
+    transition:.25s;
+
+    padding:20px;
+    box-sizing:border-box;
+}
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 22px 18px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            transform: scale(0.85);
+            transition: transform 0.25s ease-in-out;
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+            font-size: 1.5rem;
+        }
+
+        .modal-icon.success { background: #dcfce7; color: #16a34a; }
+        .modal-icon.danger { background: #fee2e2; color: #dc2626; }
+        .modal-icon.warning { background: #fef3c7; color: #d97706; }
+
+        .modal-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .modal-msg {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .modal-input {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-modal-cancel { background: #f1f5f9; color: #64748b; }
+        .btn-modal-confirm { background: #dc2626; color: white; }
+        .btn-modal-ok { background: #1e3a8a; color: white; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>SMPN 2 SOLOR BARAT</h1>
+    <h2>Pemantau Kehadiran Guru & Pegawai</h2>
+    <p id="statusLoginHeader">Pimpinan: Franci Hurint</p>
+</header>
+<div id="halamanLogin" style="display:none;padding:25px;max-width:420px;margin:40px auto;">
+
+    <div class="card" style="text-align:center;">
+
+        <h2 style="color:#1e3a8a;margin-bottom:8px;">
+            🏫 SMPN 2 SOLOR BARAT
+        </h2>
+
+        <p style="margin-bottom:25px;color:#64748b;">
+            Sistem Presensi Guru & Pegawai
+        </p>
+
+        <button
+            class="btn-submit"
+            onclick="loginPimpinan()">
+            👨‍💼 Login sebagai Pimpinan
+        </button>
+
+        <button
+            class="btn-submit"
+            style="margin-top:10px;background:#16a34a;"
+            onclick="loginGuru()">
+            👨‍🏫 Masuk sebagai Guru
+        </button>
+
+    </div>
+
+</div>
+<div class="container">
+    <div class="tabs">
+
+    <button class="tab-btn active" onclick="switchTab('tab-input')">
+        📅<br>
+        <span>Input Harian</span>
+    </button>
+
+    <button class="tab-btn" onclick="switchTab('tab-rekap')">
+        📊<br>
+        <span>Rekapan</span>
+    </button>
+
+    <button class="tab-btn" onclick="switchTab('tab-db')">
+        🗂️<br>
+        <span>Database</span>
+    </button>
+
+    <button class="tab-btn"
+            onclick="logoutAplikasi()"
+            style="background:#dc2626;color:#fff;">
+        🚪<br>
+        <span>Keluar</span>
+    </button>
+
+</div>
+    <!-- TAB 1: INPUT PRESENSI HARIAN -->
+    <div id="tab-input" class="tab-content active">
+        <div class="card">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label for="tglInput">Tanggal Pemantauan:</label>
+                <input type="date" id="tglInput" onchange="loadPresensiTanggal()">
+            </div>
+        </div>
+
+        <div id="listInputArea"></div>
+
+        <button class="btn-submit" onclick="simpanPresensiHarian()" style="background: var(--success); margin-top: 10px;">
+            Simpan Presensi Hari Ini
+        </button>
+    </div>
+
+    <!-- TAB 2: REKAPAN BULANAN -->
+    <div id="tab-rekap" class="tab-content">
+        <div class="card">
+            <div class="input-group" style="margin-bottom: 0;">
+                <label for="filterBulan">Pilih Bulan & Tahun Rekap:</label>
+                <input type="month" id="filterBulan" onchange="renderRekap()">
+            </div>
+        </div>
+
+        <div id="listRekapArea"></div>
+
+        <div class="info-box">
+            <strong>Ketentuan Perhitungan:</strong><br>
+            • <strong>3x Absen Apel Pagi</strong> = Hitung 1x Alpa Tambahan.<br>
+            • <strong>3x Bolos</strong> = Hitung 1x Alpa Tambahan.<br>
+            • <strong>Kehadiran 80% - 84%</strong>: Otomatis mendapat Pesan WhapsApp (Peringatan 1).<br>
+            • <strong>Kehadiran ≤ 79%</strong>: Otomatis mendapat Pesan WhapsApp (Peringatan Terakhir).
+        </div>
+    </div>
+
+    <!-- TAB 3: DATABASE GURU & PEGAWAI -->
+    <div id="tab-db" class="tab-content">
+        <div class="card">
+            <div class="card-title" id="formDbTitle">Tambah Guru / Pegawai</div>
+            <input type="hidden" id="editGuruId" value="">
+            <div class="input-group">
+                <label>Nama Lengkap:</label>
+                <input type="text" id="dbNama" placeholder="Contoh: Maria G. Srani, S.Pd">
+            </div>
+            <div class="input-group">
+                <label>Nomor WhatsApp:</label>
+                <input type="text" id="dbWA" placeholder="Contoh: 081234567890">
+            </div>
+            <button class="btn-submit" id="btnSimpanDb" onclick="simpanDatabaseGuru()">+ Tambah ke Database</button>
+            <button class="btn-submit" id="btnBatalEdit" onclick="batalEditGuru()" style="background: #64748b; margin-top: 6px; display: none;">Batal Edit</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Daftar Guru / Pegawai Terdaftar</div>
+            <div id="listDatabaseArea"></div>
+        </div>
+    </div>
+</div>
+
+<!-- CUSTOM POP-UP / MODAL HTML -->
+<div class="modal-overlay" id="customModal">
+    <div class="modal-box">
+        <div class="modal-icon" id="modalIcon">✓</div>
+        <div class="modal-title" id="modalTitle">Judul</div>
+        <div class="modal-msg" id="modalMsg">Pesan informasi disini.</div>
+        <div class="modal-input" id="modalInputContainer" style="display: none;">
+            <input type="password" id="modalPassword" placeholder="Masukkan Password Reset">
+        </div>
+        <div class="modal-actions" id="modalActions">
+            <!-- Dynamic Buttons -->
+        </div>
+    </div>
+</div>
+
+<!-- ================= FIREBASE ================= -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBK5nwgBaE9RmKnay-rlXweJ5CQezYueFo",
+  authDomain: "presensi-smpn-2-solor-barat.firebaseapp.com",
+  databaseURL: "https://presensi-smpn-2-solor-barat-default-rtdb.firebaseio.com",
+  projectId: "presensi-smpn-2-solor-barat",
+  storageBucket: "presensi-smpn-2-solor-barat.firebasestorage.app",
+  messagingSenderId: "421237975415",
+  appId: "1:421237975415:web:a4b67f4d5da4bd73ae1972"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+const guruRef = db.ref("guru");
+const presensiRef = db.ref("presensi");
+</script>
+
+<script>    const KEY_GURU = 'solor_guru_db';
+    const KEY_PRESENSI = 'solor_presensi_data';
+    const RESET_PASSWORD = 'franci31'; // PASSWORD RESET DATA (Bisa diganti jika perlu)
+    const KEY_ROLE = 'solor_user_role';
+
+let userRole = localStorage.getItem(KEY_ROLE) || '';
+    let dbGuru = JSON.parse(localStorage.getItem(KEY_GURU)) || [
+        { id: 1, nama: "Guru Sample 1", wa: "081234567890" },
+        { id: 2, nama: "Guru Sample 2", wa: "081234567891" }
+    ];
+    let dataPresensi = JSON.parse(localStorage.getItem(KEY_PRESENSI)) || {};
+    // ==========================
+// FIREBASE REFERENCES
+// ==========================
+
+const guruRef = db.ref("guru");
+const presensiRef = db.ref("presensi");
+function syncGuruDariFirebase(){
+
+    guruRef.on("value",(snapshot)=>{
+
+        const data = snapshot.val();
+
+        if(data){
+
+            dbGuru = data;
+
+        }else{
+
+            dbGuru = [];
+
+        }
+
+        localStorage.setItem(
+            KEY_GURU,
+            JSON.stringify(dbGuru)
+        );
+
+        renderDatabase();
+
+    });
+
+}    let pendingConfirmAction = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('tglInput').value = today;
+    document.getElementById('filterBulan').value = today.substring(0, 7);
+
+    if(userRole === ''){
+
+        document.getElementById('halamanLogin').style.display = 'block';
+        document.querySelector('.container').style.display = 'none';
+
+    }else{
+
+        document.getElementById('halamanLogin').style.display = 'none';
+        document.querySelector('.container').style.display = 'block';
+
+    }
+
+    syncGuruDariFirebase();
+
+renderDatabase();
+loadPresensiTanggal();
+renderRekap();
+
+});
+    /* --- CUSTOM POPUP SYSTEM --- */
+    function showAlert(title, msg, type = 'success') {
+        const modal = document.getElementById('customModal');
+        const iconEl = document.getElementById('modalIcon');
+        
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMsg').innerText = msg;
+        document.getElementById('modalInputContainer').style.display = 'none';
+
+        iconEl.className = 'modal-icon ' + type;
+        if(type === 'success') iconEl.innerText = '✓';
+        else if(type === 'danger') iconEl.innerText = '✕';
+        else iconEl.innerText = '!';
+
+        document.getElementById('modalActions').innerHTML = `
+            <button class="btn-modal btn-modal-ok" onclick="closeModal()">Berhasil Boss...</button>
+        `;
+        modal.classList.add('active');
+    }
+
+    function showConfirm(title, msg, onConfirm) {
+        const modal = document.getElementById('customModal');
+        const iconEl = document.getElementById('modalIcon');
+
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMsg').innerText = msg;
+        document.getElementById('modalInputContainer').style.display = 'none';
+
+        iconEl.className = 'modal-icon danger';
+        iconEl.innerText = '?';
+
+        pendingConfirmAction = onConfirm;
+
+        document.getElementById('modalActions').innerHTML = `
+            <button class="btn-modal btn-modal-cancel" onclick="closeModal()">Batal</button>
+            <button class="btn-modal btn-modal-confirm" onclick="executeConfirm()">Ya, Hapus</button>
+        `;
+        modal.classList.add('active');
+    }
+
+    function showPasswordPrompt(title, msg, onConfirm) {
+        const modal = document.getElementById('customModal');
+        const iconEl = document.getElementById('modalIcon');
+
+        document.getElementById('modalTitle').innerText = title;
+        document.getElementById('modalMsg').innerText = msg;
+        
+        const inputContainer = document.getElementById('modalInputContainer');
+        inputContainer.style.display = 'block';
+        const passInput = document.getElementById('modalPassword');
+        passInput.value = '';
+
+        iconEl.className = 'modal-icon danger';
+        iconEl.innerText = '🔒';
+
+        pendingConfirmAction = () => {
+            const enteredPass = passInput.value;
+            
+            // Tutup dulu pop-up input password agar tidak bentrok
+            document.getElementById('customModal').classList.remove('active');
+            
+            // Beri sedikit jeda 200ms agar animasi pop-up mulus
+            setTimeout(() => {
+                if(enteredPass === RESET_PASSWORD) {
+                    // JIKA BENAR: Jalankan reset data lalu tampilkan alert sukses
+                    onConfirm();
+                } else {
+                    // JIKA SALAH: Tampilkan alert peringatan (diam sampai tombol diklik)
+                    showAlert("Akses Ditolak! ❌", "Kata sandi yang Anda masukkan SALAH. Data batal dihapus!", "danger");
+                }
+            }, 200);
+        };
+
+        document.getElementById('modalActions').innerHTML = `
+            <button class="btn-modal btn-modal-cancel" onclick="closeModal()">Batal</button>
+            <button class="btn-modal btn-modal-confirm" onclick="executeConfirm()">Reset Sekarang</button>
+        `;
+        modal.classList.add('active');
+        setTimeout(() => passInput.focus(), 300);
+    }
+    function closeModal() {
+        document.getElementById('customModal').classList.remove('active');
+        pendingConfirmAction = null;
+    }
+
+    function executeConfirm() {
+        if(pendingConfirmAction) pendingConfirmAction();
+        closeModal();
+    }
+   function loginGuru(){
+
+    userRole = "guru";
+
+    localStorage.setItem(KEY_ROLE,userRole);
+
+    document.getElementById("halamanLogin").style.display = "none";
+    document.querySelector(".container").style.display = "block";
+    document.getElementById("statusLoginHeader").textContent =
+    "👨‍🏫 Mode Guru | 🟡 View Only";
+    // Sembunyikan menu Input & Database
+    document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display="none";
+    document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display="none";
+
+    // Langsung buka Rekapan
+    switchTabManual("tab-rekap");
+
+}
+
+function loginPimpinan(){
+
+    showPasswordPrompt(
+        "🔒 Login Pimpinan",
+        "Masukkan password untuk masuk sebagai Pimpinan.",
+        () => {
+
+            userRole = "admin";
+
+            localStorage.setItem(KEY_ROLE, userRole);
+
+            document.getElementById("halamanLogin").style.display = "none";
+            document.querySelector(".container").style.display = "block";
+            document.getElementById("statusLoginHeader").innerHTML =
+    "👨‍💼 Pimpinan: Franci Hurint | 🟢 Akses Penuh";
+            document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display = "";
+            document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display = "";
+
+            switchTabManual("tab-input");
+
+        }
+    );
+
+}function logoutAplikasi(){
+
+    localStorage.removeItem(KEY_ROLE);
+
+    userRole = "";
+
+    location.reload();
+
+}
+function switchTabManual(tabId){
+
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+        btn.classList.remove("active");
+    });
+
+    document.querySelectorAll('.tab-content').forEach(tab=>{
+        tab.classList.remove("active");
+    });
+
+    document.getElementById(tabId).classList.add("active");
+
+    document.querySelector(`button[onclick="switchTab('${tabId}')"]`).classList.add("active");
+
+    if(tabId==="tab-input") loadPresensiTanggal();
+
+    if(tabId==="tab-rekap") renderRekap();
+
+}
+    function switchTab(tabId) {
+    // ===== KUNCI AKSES GURU =====
+    if(userRole === "guru" && (tabId === "tab-input" || tabId === "tab-db")){
+        showAlert(
+            "Akses Ditolak 🔒",
+            "Menu ini hanya dapat diakses oleh Pimpinan.",
+            "danger"
+        );
+        return;
+    }
+    // ============================
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        if(tabId === 'tab-rekap') renderRekap();
+        if(tabId === 'tab-input') loadPresensiTanggal();
+    }
+   function toggleDetail(btn, guruId){
+
+    const detail = btn.nextElementSibling;
+
+    if(detail.style.display === "none" || detail.style.display === ""){
+
+        detail.style.display = "block";
+
+        let html = `
+<div style="
+    margin-top:10px;
+    padding:12px;
+    background:#f8fafc;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    border-left:4px solid #2563eb;
+">
+`;
+
+window.datesRekapAktif.forEach(tgl=>{
+
+    const data = dataPresensi[tgl]?.[guruId];
+
+    if(!data) return;
+
+    html += `
+        <div style="padding:8px 0;border-bottom:1px dashed #cbd5e1;">
+            <b>📅 ${tgl}</b><br>
+
+           Status :
+<b>${
+    data.status === "H" ? "✅ Hadir" :
+    data.status === "S" ? "🤒 Sakit" :
+    data.status === "I" ? "📝 Izin" :
+    data.status === "DL" ? "🚗 Dinas Luar" :
+    data.status === "A" ? "❌ Alpa" :
+    data.status === "B" ? "⛔ Bolos" :
+    "-"
+}</b><br>
+
+            Apel :
+            <b>${data.alpaApel ? "🚩 Tidak Ikut" : "✅ Ikut"}</b>
+        </div>
+    `;
+
+});
+
+html += `</div>`;
+
+detail.innerHTML = html;
+
+        btn.innerHTML = "▲ Tutup Detail";
+
+    }else{
+
+        detail.style.display = "none";
+        detail.innerHTML = "";
+        btn.innerHTML = "📋 Lihat Detail Kehadiran";
+
+    }
+
+}
+    /* --- DATABASE MANAGEMENT --- */
+    function simpanDatabaseGuru() {
+        const editId = document.getElementById('editGuruId').value;
+        const nama = document.getElementById('dbNama').value.trim();
+        const wa = document.getElementById('dbWA').value.trim();
+
+        if(!nama) {
+            showAlert("Peringatan", "Nama guru/pegawai wajib diisi!", "warning");
+            return;
+        }
+
+        if(editId) {
+            const guruIndex = dbGuru.findIndex(g => g.id == editId);
+            if(guruIndex !== -1) {
+                dbGuru[guruIndex].nama = nama;
+                dbGuru[guruIndex].wa = wa;
+                showAlert("Berhasil!", "Data guru berhasil diperbarui.", "success");
+            }
+        } else {
+            const newGuru = { id: Date.now(), nama, wa };
+            dbGuru.push(newGuru);
+            showAlert("Berhasil!", "Guru/Pegawai berhasil ditambahkan ke database.", "success");
+        }
+
+        localStorage.setItem(KEY_GURU, JSON.stringify(dbGuru));
+        batalEditGuru();
+        renderDatabase();
+    }
+
+    function editGuru(id) {
+        const guru = dbGuru.find(g => g.id == id);
+        if(guru) {
+            document.getElementById('editGuruId').value = guru.id;
+            document.getElementById('dbNama').value = guru.nama;
+            document.getElementById('dbWA').value = guru.wa || '';
+
+            document.getElementById('formDbTitle').innerText = "Edit Data Guru / Pegawai";
+            document.getElementById('btnSimpanDb').innerText = "Simpan Perubahan";
+            document.getElementById('btnSimpanDb').style.background = "#d97706";
+            document.getElementById('btnBatalEdit').style.display = "block";
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function batalEditGuru() {
+        document.getElementById('editGuruId').value = "";
+        document.getElementById('dbNama').value = "";
+        document.getElementById('dbWA').value = "";
+
+        document.getElementById('formDbTitle').innerText = "Tambah Guru / Pegawai";
+        document.getElementById('btnSimpanDb').innerText = "+ Tambah ke Database";
+        document.getElementById('btnSimpanDb').style.background = "var(--primary)";
+        document.getElementById('btnBatalEdit').style.display = "none";
+    }
+
+    function hapusGuru(id) {
+        showConfirm("Konfirmasi Hapus", "Apakah Bapak yakin ingin menghapus guru ini dari database?", () => {
+            dbGuru = dbGuru.filter(g => g.id !== id);
+            localStorage.setItem(KEY_GURU, JSON.stringify(dbGuru));
+            renderDatabase();
+            showAlert("Terhapus", "Data guru telah berhasil dihapus.", "success");
+        });
+    }
+
+    function renderDatabase() {
+        const container = document.getElementById('listDatabaseArea');
+        if(dbGuru.length === 0) {
+            container.innerHTML = '<p style="font-size:0.8rem; color:#94a3b8; text-align:center;">Belum ada data guru terdaftar.</p>';
+            return;
+        }
+
+        let html = '';
+        dbGuru.forEach(g => {
+            html += `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+                    <div>
+                        <div style="font-weight:700; font-size:0.85rem;">${g.nama}</div>
+                        <div style="font-size:0.75rem; color:#64748b;">WA: ${g.wa || '-'}</div>
+                    </div>
+                    <div class="action-btns">
+                        <button class="btn-edit-guru" onclick="editGuru(${g.id})">Edit</button>
+                        <button class="btn-delete-guru" onclick="hapusGuru(${g.id})">Hapus</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    /* --- INPUT HARIAN --- */
+    function loadPresensiTanggal() {
+        const tgl = document.getElementById('tglInput').value;
+        const container = document.getElementById('listInputArea');
+        container.innerHTML = '';
+
+        if(dbGuru.length === 0) {
+            container.innerHTML = '<div class="card"><p style="font-size:0.85rem; text-align:center;">Silakan tambahkan guru di tab Database terlebih dahulu.</p></div>';
+            return;
+        }
+
+        const presensiHariIni = dataPresensi[tgl] || {};
+
+        dbGuru.forEach(g => {
+            const statusExisting = presensiHariIni[g.id]?.status || 'H';
+            const apelExisting = presensiHariIni[g.id]?.alpaApel || false;
+
+            const card = document.createElement('div');
+            card.className = 'guru-card';
+            card.setAttribute('data-id', g.id);
+
+            card.innerHTML = `
+                <div class="guru-name">👨‍🏫 ${g.nama}</div>
+                <div class="status-buttons">
+                    <button type="button" class="btn-status ${statusExisting === 'H' ? 'selected' : ''}" data-val="H" onclick="selectStatus(${g.id}, 'H')">
+    ✅ Hadir
+</button>
+                    <button type="button" class="btn-status ${statusExisting === 'S' ? 'selected' : ''}" data-val="S" onclick="selectStatus(${g.id}, 'S')">
+    🤒 Sakit
+</button>
+                    <button type="button" class="btn-status ${statusExisting === 'I' ? 'selected' : ''}" data-val="I" onclick="selectStatus(${g.id}, 'I')">
+    📝 Ijin
+</button>
+                    <button type="button" class="btn-status ${statusExisting === 'A' ? 'selected' : ''}" data-val="A" onclick="selectStatus(${g.id}, 'A')">Alpa</button>
+                    <button type="button" class="btn-status ${statusExisting === 'DL' ? 'selected' : ''}" data-val="DL" onclick="selectStatus(${g.id}, 'DL')">DL</button>
+<button type="button"
+        class="btn-status ${statusExisting === 'B' ? 'selected' : ''}"
+        data-val="B"
+        onclick="selectStatus(${g.id}, 'B')">
+    Bolos
+</button>
+                </div>
+                <label class="apel-check-wrapper">
+                    <input type="checkbox" class="chk-apel" ${apelExisting ? 'checked' : ''}>
+                    <span> Tidak Ikut Apel Pagi</span>
+                </label>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function selectStatus(guruId, val) {
+        const card = document.querySelector(`.guru-card[data-id="${guruId}"]`);
+        card.querySelectorAll('.btn-status').forEach(btn => {
+            btn.classList.remove('selected');
+            if(btn.getAttribute('data-val') === val) {
+                btn.classList.add('selected');
+            }
+        });
+    }
+
+    function simpanPresensiHarian() {
+        const tgl = document.getElementById('tglInput').value;
+        if(!tgl) {
+            showAlert("Peringatan", "Silakan pilih tanggal terlebih dahulu!", "warning");
+            return;
+        }
+
+        if(!dataPresensi[tgl]) dataPresensi[tgl] = {};
+
+        document.querySelectorAll('.guru-card').forEach(card => {
+            const id = card.getAttribute('data-id');
+            const selectedBtn = card.querySelector('.btn-status.selected');
+            const status = selectedBtn ? selectedBtn.getAttribute('data-val') : 'H';
+            const alpaApel = card.querySelector('.chk-apel').checked;
+
+            dataPresensi[tgl][id] = { status, alpaApel };
+        });
+
+        localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
+        showAlert("Tersimpan!", "Data presensi tanggal " + tgl + " berhasil disimpan.", "success");
+    }
+
+    /* --- RESET PERIODE DENGAN PASSWORD --- */
+window.resetRekapPeriode = function(strStart, strEnd) {
+    const PASS_BENAR = 'franci31';
+
+    showPasswordPrompt(
+        "Verifikasi Keamanan", 
+        `Masukkan kata sandi Pimpinan untuk menghapus seluruh data presensi periode (${strStart} s/d ${strEnd}):`, 
+        () => {
+            // Ambil isi teks dari kolom input modal
+            const inputEl = document.querySelector('#customModal input, #modalPasswordInput, input[type="password"]');
+            const inputPassword = inputEl ? inputEl.value : '';
+
+            if (inputPassword === PASS_BENAR) {
+                Object.keys(dataPresensi).forEach(dStr => {
+                    if (dStr >= strStart && dStr <= strEnd) {
+                        delete dataPresensi[dStr];
+                    }
+                });
+
+                localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
+                renderRekap();
+                showAlert("Berhasil", "Data presensi periode tersebut telah berhasil dibersihkan.", "success");
+            } else {
+                showAlert("Akses Ditolak", "Kata sandi yang Anda masukkan salah!", "error");
+            }
+        }
+    );
+};
+    /* --- REKAPAN BULANAN --- */
+    function renderRekap() {
+        const blnVal = document.getElementById('filterBulan').value;
+        const container = document.getElementById('listRekapArea');
+        container.innerHTML = '';
+
+        if(!blnVal) return;
+
+        const [yearStr, monthStr] = blnVal.split('-');
+        const year = parseInt(yearStr, 10);
+        const month = parseInt(monthStr, 10); 
+
+        const startObj = new Date(year, month - 2, 16);
+        const endObj = new Date(year, month - 1, 14);
+
+        const formatDate = (d) => {
+            let m = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            let y = d.getFullYear();
+            if (m.length < 2) m = '0' + m;
+            if (day.length < 2) day = '0' + day;
+            return [y, m, day].join('-');
+        };
+
+        const strStart = formatDate(startObj);
+        const strEnd = formatDate(endObj);
+
+        const datesInRange = Object.keys(dataPresensi).filter(dStr => {
+            return dStr >= strStart && dStr <= strEnd;
+        }).sort();
+
+        const totalHariInput = datesInRange.length || 1;
+        window.datesRekapAktif = datesInRange;
+        const infoPeriodeHtml = `
+<div style="background:#e0f2fe;color:#0369a1;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:12px;text-align:center;">
+
+    <div style="font-weight:600;margin-bottom:8px;">
+        Periode Perhitungan:<br>
+        ${strStart} s/d ${strEnd}
+    </div>
+
+    ${datesInRange.length > 0 && userRole === "admin" ? `
+
+        <button
+            onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
+            style="background:#dc2626;color:#fff;border:none;padding:7px 14px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;margin:4px;">
+            🔒 Reset Data Periode
+        </button>
+
+        <br>
+
+        <button
+            onclick="bagikanRekapGrupWA()"
+            style="background:#25D366;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;margin-top:8px;">
+            📢 Kirim Rekap Grup Sekolah
+        </button>
+
+    ` : ''}
+
+</div>
+`;const dashboardHtml = `
+<div class="dashboard-summary">
+
+    <div class="summary-card summary-blue">
+        <div class="icon">👨‍🏫</div>
+        <div class="angka">${dbGuru.length}</div>
+        <div class="judul">Total Guru</div>
+    </div>
+
+    <div class="summary-card summary-green">
+        <div class="icon">✅</div>
+        <div class="angka">0</div>
+        <div class="judul">Aman</div>
+    </div>
+
+    <div class="summary-card summary-yellow">
+        <div class="icon">⚠️</div>
+        <div class="angka">0</div>
+        <div class="judul">Peringatan</div>
+    </div>
+
+    <div class="summary-card summary-red">
+        <div class="icon">❌</div>
+        <div class="angka">0</div>
+        <div class="judul">Sanksi</div>
+    </div>
+
+</div>
+`;
+        if(datesInRange.length === 0) {
+            container.innerHTML = infoPeriodeHtml + `<div class="card"><p style="font-size:0.85rem; color:#64748b; text-align:center;">Belum ada data presensi yang diinput antara tanggal <b>${strStart}</b> sampai <b>${strEnd}</b>.</p></div>`;
+            return;
+        }
+let jumlahAman = 0;
+let jumlahPeringatan = 0;
+let jumlahSanksi = 0;
+        dbGuru.forEach(g => {
+            let countH = 0,
+    countS = 0,
+    countI = 0,
+    countA = 0,
+    countDL = 0,
+    countB = 0,
+    countAbsenApel = 0;
+
+            datesInRange.forEach(d => {
+                const rec = dataPresensi[d] ? dataPresensi[d][g.id] : null;
+                if(rec) {
+                    if(rec.status === 'H') countH++;
+if(rec.status === 'S') countS++;
+if(rec.status === 'I') countI++;
+if(rec.status === 'A') countA++;
+if(rec.status === 'DL') countDL++;
+if(rec.status === 'B') countB++;
+if(rec.alpaApel) countAbsenApel++;
+                }
+            });
+
+            const alpaDariApel = Math.floor(countAbsenApel / 3);
+const alpaDariBolos = Math.floor(countB / 3);
+
+const totalAlpaBersih =
+    countA +
+    alpaDariApel +
+    alpaDariBolos;
+            const persen = Math.max(0, Math.round(((totalHariInput - totalAlpaBersih) / totalHariInput) * 100));
+
+            let cardStyle = '';
+            let percentStyle = 'percent-green';
+            let waBtnHtml = '';
+            let statusBadge = `
+<span style="
+display:inline-block;
+padding:5px 12px;
+border-radius:20px;
+font-size:.72rem;
+font-weight:700;
+background:#dcfce7;
+color:#15803d;
+">
+🟢 AMAN
+</span>`;
+            const rincianTeks = `📌 *Rincian Kehadiran:*
+- Hadir (H): ${countH} hari
+- Sakit (S): ${countS} hari
+- Ijin (I): ${countI} hari
+- Dinas Luar (DL): ${countDL} hari
+- Alpa (A): ${countA} hari
+- Bolos (B): ${countB} kali
+- Tidak Apel: ${countAbsenApel} kali
+
+-----------------------------
+Konversi Bolos : ${alpaDariBolos} hari
+Konversi Apel  : ${alpaDariApel} hari
+
+-----------------------------
+- Total Alpa Dihitung: *${totalAlpaBersih} hari*
+- Total Hari Kerja: *${totalHariInput} hari*`;
+
+            if (persen <= 79) {
+
+    jumlahSanksi++;
+
+    cardStyle = 'border-left-color: #dc2626; background: #fef2f2;';
+    percentStyle = 'percent-red';
+    statusBadge = `
+<span style="
+display:inline-block;
+padding:5px 12px;
+border-radius:20px;
+font-size:.72rem;
+font-weight:700;
+background:#fee2e2;
+color:#b91c1c;
+">
+🔴 SANKSI
+</span>`;
+                if (g.wa) {
+                    let cleanWA = g.wa.replace(/[^0-9]/g, '');
+                    if (cleanWA.startsWith('0')) cleanWA = '62' + cleanWA.slice(1);
+
+                    const msg = `Yth. Bapak/Ibu *${g.nama}*,\n\nInformasi Kehadiran SMPN 2 Solor Barat Periode (*${strStart} s/d ${strEnd}*):\n\nPersentase Kehadiran Anda saat ini: *${persen}%* (Kategori: DIBAWAH 80%).\n\n${rincianTeks}\n\nSesuai ketentuan, Anda dikenakan sanksi/hukuman. Mohon segera memperbaiki kehadiran Anda di sisa waktu ini. Terima kasih.`;
+                    
+                    const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
+                    waBtnHtml = `<a href="${waUrl}" target="_blank" class="btn-wa-mobile" style="background: #dc2626;"> Kirim WA Sanksi (<=79%)</a>`;
+                }
+
+           } else if (persen >= 80 && persen <= 84) {
+
+    jumlahPeringatan++;
+
+    cardStyle = 'border-left-color: #d97706; background: #fffbeb;';
+    percentStyle = 'background: #fef3c7; color: #d97706;';
+    statusBadge = `
+<span style="
+display:inline-block;
+padding:5px 12px;
+border-radius:20px;
+font-size:.72rem;
+font-weight:700;
+background:#fef3c7;
+color:#b45309;
+">
+🟡 PERINGATAN
+</span>`;
+    if (g.wa) {
+        let cleanWA = g.wa.replace(/[^0-9]/g, '');
+        if (cleanWA.startsWith('0')) cleanWA = '62' + cleanWA.slice(1);
+
+        const msg = `Yth. Bapak/Ibu *${g.nama}*,\n\nInformasi Kehadiran SMPN 2 Solor Barat Periode (*${strStart} s/d ${strEnd}*):\n\nPersentase Kehadiran Anda saat ini: *${persen}%* (PERINGATAN).\n\n${rincianTeks}\n\nMohon agar dapat meningkatkan kehadiran Anda. Jika persentase turun hingga ≤79%, maka akan dikenakan sanksi sesuai kesepakatan. Terima kasih.`;
+
+        const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
+        waBtnHtml = `<a href="${waUrl}" target="_blank" class="btn-wa-mobile" style="background: #d97706;">Kirim WA Peringatan</a>`;
+    }
+
+} else {
+
+    jumlahAman++;
+
+}
+            const cardElement = document.createElement('div');
+            cardElement.setAttribute("data-guru-id", g.id);
+            cardElement.className = `rekap-card`;
+            if (cardStyle) cardElement.setAttribute('style', cardStyle);
+
+            cardElement.innerHTML = `
+                <div class="rekap-header">
+
+    <div>
+
+        <div class="rekap-nama">${g.nama}</div>
+
+        <div style="margin-top:6px;">
+            ${statusBadge}
+        </div>
+
+    </div>
+
+    <div class="rekap-percent ${percentStyle}">
+        ${persen}%
+    </div>
+
+</div>
+                <div class="rekap-details">
+    <span>H: <b>${countH}</b></span>
+    <span>S: <b>${countS}</b></span>
+    <span>I: <b>${countI}</b></span>
+    <span>DL: <b>${countDL}</b></span>
+    <span>A: <b>${countA}</b></span>
+    <span style="color:#991b1b;">B: <b>${countB}</b></span>
+    <span style="color:var(--danger)">Apel: <b>${countAbsenApel}x</b></span>
+</div>
+                <div style="font-size:0.75rem; color:#64748b; margin-bottom:8px;">
+                    Total Alpa Bersih:
+<b>${totalAlpaBersih} hari</b>
+
+<small>
+Alpa: ${countA}
++ Konversi Bolos: ${alpaDariBolos}
++ Konversi Apel: ${alpaDariApel}
+</small>
+                </div>
+                ${waBtnHtml}
+          <div style="text-align:center;margin-top:10px;">
+    <button
+    class="btn-detail"
+    onclick="toggleDetail(this, ${g.id})">
+    📋 Lihat Detail Kehadiran
+</button>
+
+<div class="detail-kehadiran" style="display:none;"></div>
+</div>
+            `;
+            container.appendChild(cardElement);
+        });
+
+        container.insertAdjacentHTML(
+    'afterbegin',
+    infoPeriodeHtml + dashboardHtml
+);
+    }
+/* --- BAGIKAN REKAPAN RAPI KE WHATSAPP --- */
+function bagikanLinkRekapKeWA() {
+    if (!dataPresensi || Object.keys(dataPresensi).length === 0) {
+        alert("Belum ada data presensi untuk dibagikan!");
+        return;
+    }
+
+    let pesan = "*REKAPITULASI PRESENSI SMPN 2 SOLOR BARAT*\n";
+    pesan += "=========================================\n\n";
+
+    // Menyusun ringkasan data per tanggal secara rapi
+    Object.keys(dataPresensi).sort().forEach(tanggal => {
+        pesan += `📅 *Tanggal:* ${tanggal}\n`;
+        const rekapHariIni = dataPresensi[tanggal];
+        
+        if (typeof rekapHariIni === 'object') {
+            Object.keys(rekapHariIni).forEach(nama => {
+                pesan += `- ${nama}: *${rekapHariIni[nama]}*\n`;
+            });
+        }
+        pesan += "\n";
+    });
+
+    pesan += "_Dikirim otomatis dari Sistem Presensi Sekolah_";
+
+    // Buka WhatsApp untuk kirim teks rapi
+    const urlWA = "https://api.whatsapp.com/send?text=" + encodeURIComponent(pesan);
+    window.open(urlWA, '_blank');
+}
+
+
+/* --- KIRIM REKAPAN LENGKAP & RAPI KE WA --- */
+function bagikanLinkRekapKeWA() {
+    // 1. Cek jika fungsi hitung rekapan (rekapData/hitungRekap) ada di aplikasi
+    if (typeof rekapData !== 'undefined') {
+        rekapData(); // Pastikan rekapan terbaru sudah dihitung
+    }
+
+    let pesan = "*REKAPITULASI PRESENSI SMPN 2 SOLOR BARAT*\n";
+    pesan += "=========================================\n\n";
+
+    // 2. Jika ada daftar master guru, kita susun rekap per nama
+    if (typeof dataGuru !== 'undefined' && Array.isArray(dataGuru)) {
+        dataGuru.forEach((guru, idx) => {
+            const nama = guru.nama || guru.namaGuru || `Guru ${idx + 1}`;
+            const h = guru.h || guru.hadir || 0;
+            const s = guru.s || guru.sakit || 0;
+            const i = guru.i || guru.izin || 0;
+            const dl = guru.dl || guru.dinasLuar || 0;
+            const a = guru.a || guru.alpa || 0;
+            const persen = guru.persen || guru.persentase || '0%';
+
+            pesan += `👤 *${nama}* (${persen})\n`;
+            pesan += `└ H: ${h} | S: ${s} | I: ${i} | DL: ${dl} | A: ${a}\n\n`;
+        });
+    } else {
+        // Alternatif jika data tersimpan di objek presensi
+        pesan += "Mohon gunakan tombol Print/PDF untuk hasil tampilan kartu visual lengkap.\n";
+    }
+
+    pesan += "=========================================\n";
+    pesan += "_Laporan otomatis Sistem Presensi Sekolah_";
+
+    // Buka WhatsApp
+    const urlWA = "https://api.whatsapp.com/send?text=" + encodeURIComponent(pesan);
+    window.open(urlWA, '_blank');
+}
+/* ===========================================================
+   KIRIM REKAP KEHADIRAN KE GRUP WHATSAPP
+=========================================================== */
+function bagikanRekapGrupWA() {
+
+    const blnVal = document.getElementById('filterBulan').value;
+
+    if (!blnVal) {
+        showAlert("Peringatan", "Silakan pilih periode rekap terlebih dahulu!", "warning");
+        return;
+    }
+
+    const [yearStr, monthStr] = blnVal.split('-');
+    const year = parseInt(yearStr);
+    const month = parseInt(monthStr);
+
+    const startObj = new Date(year, month - 2, 16);
+    const endObj   = new Date(year, month - 1, 14);
+
+    function formatDate(d){
+        const m = String(d.getMonth()+1).padStart(2,'0');
+        const t = String(d.getDate()).padStart(2,'0');
+        return `${d.getFullYear()}-${m}-${t}`;
+    }
+
+    const strStart = formatDate(startObj);
+    const strEnd   = formatDate(endObj);
+
+    const datesInRange = Object.keys(dataPresensi)
+        .filter(tgl => tgl >= strStart && tgl <= strEnd)
+        .sort();
+
+    if(datesInRange.length === 0){
+        showAlert("Peringatan","Belum ada data pada periode ini.","warning");
+        return;
+    }
+
+    const totalHari = datesInRange.length;
+
+    let pesan = `🏫 *SMPN 2 SOLOR BARAT*
+📋 *REKAP KEHADIRAN GURU & PEGAWAI*
+
+Periode:
+${strStart} s/d ${strEnd}
+
+================================
+
+`;
+
+    dbGuru.forEach((g,index)=>{
+
+        let H=0,
+    S=0,
+    I=0,
+    A=0,
+    DL=0,
+    B=0,
+    APEL=0;
+
+        datesInRange.forEach(tgl=>{
+
+            const rec = dataPresensi[tgl]?.[g.id];
+
+            if(!rec) return;
+
+            if(rec.status==="H") H++;
+if(rec.status==="S") S++;
+if(rec.status==="I") I++;
+if(rec.status==="A") A++;
+if(rec.status==="DL") DL++;
+if(rec.status==="B") B++;
+
+if(rec.alpaApel) APEL++;
+        });
+
+        const alpaDariApel = Math.floor(APEL / 3);
+const alpaDariBolos = Math.floor(B / 3);
+
+const totalAlpa = A + alpaDariApel + alpaDariBolos;
+
+        const persen = Math.max(
+            0,
+            Math.round(
+                ((totalHari-totalAlpa)/totalHari)*100
+            )
+        );
+
+        let ikon="✅";
+
+        if(persen<=79){
+            ikon="❌";
+        }else if(persen<=84){
+            ikon="⚠️";
+        }
+
+        pesan += `${index+1}. ${g.nama}
+${ikon} Kehadiran : ${persen}%
+
+H : ${H}
+S : ${S}
+I : ${I}
+DL : ${DL}
+A : ${A}
+B : ${B}
+Apel : ${APEL}
+
+Konversi Bolos : ${alpaDariBolos}
+Konversi Apel : ${alpaDariApel}
+Total Alpa : ${totalAlpa}
+
+--------------------------------
+
+`;
+    });
+
+    pesan += `================================
+
+Catatan:
+• Persentase 80–84% : Peringatan.
+• Persentase ≤79% : Sanksi.`;
+
+    const url = "https://wa.me/?text=" + encodeURIComponent(pesan);
+
+    window.open(url,"_blank");
+
+}
+</script>
+
+</body>
+</html>
