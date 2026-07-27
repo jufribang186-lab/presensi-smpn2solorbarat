@@ -1251,7 +1251,13 @@ detail.innerHTML = html;
         );
 
         // Hapus dari Firebase
-        guruRef.child(id).remove();
+guruRef.child(id).remove()
+.then(() => {
+    console.log("BERHASIL HAPUS FIREBASE:", id);
+})
+.catch((err) => {
+    console.error("GAGAL HAPUS FIREBASE:", err);
+});
 
         renderDatabase();
 
