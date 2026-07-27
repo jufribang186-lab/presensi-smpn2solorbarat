@@ -780,34 +780,7 @@ function syncGuruDariFirebase(){
 
     });
 
-} 
-function syncPresensiDariFirebase(){
-
-    presensiRef.on("value", (snapshot)=>{
-
-        const data = snapshot.val();
-
-        if(data){
-            dataPresensi = data;
-        }else{
-            dataPresensi = {};
-        }
-
-        localStorage.setItem(
-            KEY_PRESENSI,
-            JSON.stringify(dataPresensi)
-        );
-
-        // Refresh tampilan
-        loadPresensiTanggal();
-
-        if(document.getElementById("filterBulan").value){
-            renderRekap();
-        }
-
-    });
-
-}   
+}    
 let pendingConfirmAction = null;
 
     document.addEventListener("DOMContentLoaded", () => {
