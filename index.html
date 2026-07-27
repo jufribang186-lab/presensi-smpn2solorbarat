@@ -1019,8 +1019,14 @@ function switchTabManual(tabId){
 
         detail.style.display = "block";
 
-        let html = `
-<div style="
+        // ===== TAMBAHKAN DI SINI =====
+        let countApel = 0;
+        let countBolos = 0;
+        let countUpacara = 0;
+        let countAlpa = 0;
+        // =============================
+
+        let html = `<div style="
     margin-top:10px;
     padding:12px;
     background:#f8fafc;
@@ -1035,30 +1041,208 @@ window.datesRekapAktif.forEach(tgl=>{
     const data = dataPresensi[tgl]?.[guruId];
 
     if(!data) return;
+if(data.status === "A") countAlpa++;
 
+if(data.alpaApel) countApel++;
+
+if(data.bolos) countBolos++;
+
+if(data.tidakUpacara) countUpacara++;
     html += `
-        <div style="padding:8px 0;border-bottom:1px dashed #cbd5e1;">
-            <b>📅 ${tgl}</b><br>
+<div style="padding:8px 0;border-bottom:1px dashed #cbd5e1;">
 
-           Status :
+<b>📅 ${tgl}</b><br>
+
+Status :
 <b>${
     data.status === "H" ? "✅ Hadir" :
     data.status === "S" ? "🤒 Sakit" :
     data.status === "I" ? "📝 Izin" :
     data.status === "DL" ? "🚗 Dinas Luar" :
     data.status === "A" ? "❌ Alpa" :
-    data.status === "B" ? "⛔ Bolos" :
     "-"
-}</b><br>
+}</b>
 
-            Apel :
-            <b>${data.alpaApel ? "🚩 Tidak Ikut" : "✅ Ikut"}</b>
-        </div>
-    `;
+${
+data.status === "H"
+?
+`
+<br>
 
+Apel :
+<b>${data.alpaApel ? "🚩 Tidak Ikut" : "✅ Ikut"}</b>
+
+<br>
+
+Bolos :
+<b>${data.bolos ? "⛔ Ya" : "✅ Tidak"}</b>
+
+<br>
+
+Upac. Bendera :
+<b>${data.tidakUpacara ? "🚩 Tidak Ikut" : "✅ Ikut"}</b>
+`
+:
+""
+}
+</div>
+`;
 });
+const alpaDariApel = Math.floor(countApel / 3);
 
-html += `</div>`;
+const alpaDariBolos = Math.floor(countBolos / 3);
+
+const totalAlpa =
+    countAlpa +
+    alpaDariApel +
+    alpaDariBolos;
+
+const dendaApel = countApel * 5000;
+const dendaBolos = countBolos * 10000;
+const dendaUpacara = countUpacara * 15000;
+const dendaAlpa = totalAlpa * 20000;
+
+const totalDenda =
+    dendaApel +
+    dendaBolos +
+    dendaUpacara +
+    dendaAlpa;
+
+html += `
+
+<div style="
+margin-top:14px;
+background:#ffffff;
+border:1px solid #e5e7eb;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 3px 8px rgba(0,0,0,.08);
+">
+
+<div style="
+background:#b45309;
+color:white;
+padding:10px;
+font-weight:bold;
+font-size:.95rem;
+text-align:center;
+">
+💰 RINCIAN DENDA
+</div>
+
+<div style="padding:14px;line-height:1.9;">
+
+<div style="display:flex;justify-content:space-between;">
+<span>📢 Tidak Ikut Apel</span>
+<b>${countApel} × Rp5.000</b>
+</div>
+
+<div style="text-align:right;color:#b91c1c;font-weight:bold;">
+Rp${dendaApel.toLocaleString('id-ID')}
+</div>
+
+<hr>
+
+<div style="display:flex;justify-content:space-between;">
+<span>🚶 Bolos</span>
+<b>${countBolos} × Rp10.000</b>
+</div>
+
+<div style="text-align:right;color:#b91c1c;font-weight:bold;">
+Rp${dendaBolos.toLocaleString('id-ID')}
+</div>
+
+<hr>
+
+<div style="display:flex;justify-content:space-between;">
+<span>🇮🇩 Tdk Ikut Upac. Bendera</span>
+<b>${countUpacara} × Rp15.000</b>
+</div>
+
+<div style="text-align:right;color:#b91c1c;font-weight:bold;">
+Rp${dendaUpacara.toLocaleString('id-ID')}
+</div>
+
+<hr>
+
+<div style="display:flex;justify-content:space-between;">
+<span>❌ Alpa</span>
+<b>${totalAlpa} × Rp20.000</b>
+</div>
+
+<div style="text-align:right;color:#b91c1c;font-weight:bold;">
+Rp${dendaAlpa.toLocaleString('id-ID')}
+</div>
+
+<hr style="border:2px dashed #d1d5db;">
+<hr style="border:1px dashed #d1d5db;margin:14px 0;">
+
+<div style="
+background:#f8fafc;
+border:1px solid #cbd5e1;
+border-radius:10px;
+padding:10px;
+margin-bottom:14px;
+">
+
+<div style="
+font-weight:bold;
+color:#1e3a8a;
+margin-bottom:8px;
+">
+📊 STATISTIK PELANGGARAN
+</div>
+
+<div style="display:flex;justify-content:space-between;">
+<span>📢 Tidak Ikut Apel</span>
+<b>${countApel}x</b>
+</div>
+
+<div style="display:flex;justify-content:space-between;">
+<span>🚶 Bolos</span>
+<b>${countBolos}x</b>
+</div>
+
+<div style="display:flex;justify-content:space-between;">
+<span>🇮🇩 Tdk Ikut Upac. Bendera</span>
+<b>${countUpacara}x</b>
+</div>
+
+<hr style="margin:8px 0;">
+
+<div style="
+display:flex;
+justify-content:space-between;
+font-weight:bold;
+color:#b91c1c;
+">
+<span>Total Pelanggaran</span>
+<span>${countApel + countBolos + countUpacara} kali</span>
+</div>
+
+</div>
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:1.05rem;
+font-weight:bold;
+color:#991b1b;
+">
+
+<span>💵 TOTAL DENDA</span>
+
+<span>
+Rp${totalDenda.toLocaleString('id-ID')}
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+`;html += `</div>`;
 
 detail.innerHTML = html;
 
@@ -1285,42 +1469,120 @@ guruRef.child(id).remove()
             card.innerHTML = `
                 <div class="guru-name">👨‍🏫 ${g.nama}</div>
                 <div class="status-buttons">
-                    <button type="button" class="btn-status ${statusExisting === 'H' ? 'selected' : ''}" data-val="H" onclick="selectStatus(${g.id}, 'H')">
-    ✅ Hadir
-</button>
-                    <button type="button" class="btn-status ${statusExisting === 'S' ? 'selected' : ''}" data-val="S" onclick="selectStatus(${g.id}, 'S')">
-    🤒 Sakit
-</button>
-                    <button type="button" class="btn-status ${statusExisting === 'I' ? 'selected' : ''}" data-val="I" onclick="selectStatus(${g.id}, 'I')">
-    📝 Ijin
-</button>
-                    <button type="button" class="btn-status ${statusExisting === 'A' ? 'selected' : ''}" data-val="A" onclick="selectStatus(${g.id}, 'A')">Alpa</button>
-                    <button type="button" class="btn-status ${statusExisting === 'DL' ? 'selected' : ''}" data-val="DL" onclick="selectStatus(${g.id}, 'DL')">DL</button>
-<button type="button"
-        class="btn-status ${statusExisting === 'B' ? 'selected' : ''}"
-        data-val="B"
-        onclick="selectStatus(${g.id}, 'B')">
-    Bolos
-</button>
-                </div>
-                <label class="apel-check-wrapper">
-                    <input type="checkbox" class="chk-apel" ${apelExisting ? 'checked' : ''}>
-                    <span> Tidak Ikut Apel Pagi</span>
-                </label>
+
+    <button type="button"
+        class="btn-status ${statusExisting==='H'?'selected':''}"
+        data-val="H"
+        onclick="selectStatus(${g.id},'H')">
+        ✅ Hadir
+    </button>
+
+    <button type="button"
+        class="btn-status ${statusExisting==='S'?'selected':''}"
+        data-val="S"
+        onclick="selectStatus(${g.id},'S')">
+        🤒 Sakit
+    </button>
+
+    <button type="button"
+        class="btn-status ${statusExisting==='I'?'selected':''}"
+        data-val="I"
+        onclick="selectStatus(${g.id},'I')">
+        📝 Ijin
+    </button>
+
+    <button type="button"
+        class="btn-status ${statusExisting==='DL'?'selected':''}"
+        data-val="DL"
+        onclick="selectStatus(${g.id},'DL')">
+        🚗 DL
+    </button>
+
+    <button type="button"
+        class="btn-status ${statusExisting==='A'?'selected':''}"
+        data-val="A"
+        onclick="selectStatus(${g.id},'A')">
+        ❌ Alpa
+    </button>
+
+</div>
+
+<hr style="margin:10px 0;border:0;border-top:1px dashed #d1d5db;">
+
+<div class="pelanggaran-area">
+
+    <label class="apel-check-wrapper">
+        <input
+            type="checkbox"
+            class="chk-apel"
+            ${apelExisting ? 'checked' : ''}>
+        <span> Tidak Ikut Apel</span>
+    </label>
+
+    <label class="apel-check-wrapper">
+        <input
+            type="checkbox"
+            class="chk-upacara"
+            ${(presensiHariIni[g.id]?.tidakUpacara) ? 'checked' : ''}>
+        <span> Tidak Ikut Upac. Bendera</span>
+    </label>
+
+</div>
+<label class="apel-check-wrapper">
+    <input type="checkbox"
+           class="chk-bolos"
+           ${presensiHariIni[g.id]?.bolos ? "checked":""}>
+    <span> Bolos</span>
+</label>
+
+
             `;
             container.appendChild(card);
         });
     }
 
     function selectStatus(guruId, val) {
-        const card = document.querySelector(`.guru-card[data-id="${guruId}"]`);
-        card.querySelectorAll('.btn-status').forEach(btn => {
-            btn.classList.remove('selected');
-            if(btn.getAttribute('data-val') === val) {
-                btn.classList.add('selected');
-            }
-        });
+
+    const card = document.querySelector(`.guru-card[data-id="${guruId}"]`);
+
+    // Pilih status
+    card.querySelectorAll(".btn-status").forEach(btn => {
+
+        btn.classList.remove("selected");
+
+        if(btn.dataset.val === val){
+            btn.classList.add("selected");
+        }
+
+    });
+
+    const apel = card.querySelector(".chk-apel");
+    const bolos = card.querySelector(".chk-bolos");
+    const upacara = card.querySelector(".chk-upacara");
+
+    const apelWrap = apel.closest("label");
+    const bolosWrap = bolos.closest("label");
+    const upacaraWrap = upacara.closest("label");
+
+    if(val === "H"){
+
+        apelWrap.style.display = "flex";
+        bolosWrap.style.display = "flex";
+        upacaraWrap.style.display = "flex";
+
+    }else{
+
+        apel.checked = false;
+        bolos.checked = false;
+        upacara.checked = false;
+
+        apelWrap.style.display = "none";
+        bolosWrap.style.display = "none";
+        upacaraWrap.style.display = "none";
+
     }
+
+}
 
     function simpanPresensiHarian() {
           console.log("Tombol Simpan Presensi ditekan");
@@ -1336,10 +1598,35 @@ guruRef.child(id).remove()
             const id = card.getAttribute('data-id');
             const selectedBtn = card.querySelector('.btn-status.selected');
             const status = selectedBtn ? selectedBtn.getAttribute('data-val') : 'H';
-            const alpaApel = card.querySelector('.chk-apel').checked;
 
-            dataPresensi[tgl][id] = { status, alpaApel };
-        });
+let alpaApel =
+    card.querySelector(".chk-apel").checked;
+
+let bolos =
+    card.querySelector(".chk-bolos").checked;
+
+let tidakUpacara =
+    card.querySelector(".chk-upacara").checked;
+
+// Jika bukan Hadir, semua pelanggaran otomatis nol
+if (status !== "H") {
+
+    alpaApel = false;
+    bolos = false;
+    tidakUpacara = false;
+
+}
+
+dataPresensi[tgl][id] = {
+    status,
+
+    alpaApel,
+
+    bolos,
+
+    tidakUpacara
+
+};        });
 
         localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
 
@@ -1440,11 +1727,7 @@ window.resetRekapPeriode = function(strStart, strEnd) {
 
     ${datesInRange.length > 0 && userRole === "admin" ? `
 
-        <button
-            onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
-            style="background:#dc2626;color:#fff;border:none;padding:7px 14px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;margin:4px;">
-            🔒 Reset Data Periode
-        </button>
+           onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
 
         <br>
 
@@ -1500,8 +1783,8 @@ let jumlahSanksi = 0;
     countA = 0,
     countDL = 0,
     countB = 0,
-    countAbsenApel = 0;
-
+    countAbsenApel = 0,
+    countUpacara = 0;
             datesInRange.forEach(d => {
                 const rec = dataPresensi[d] ? dataPresensi[d][g.id] : null;
                 if(rec) {
@@ -1510,8 +1793,10 @@ if(rec.status === 'S') countS++;
 if(rec.status === 'I') countI++;
 if(rec.status === 'A') countA++;
 if(rec.status === 'DL') countDL++;
-if(rec.status === 'B') countB++;
+
+if(rec.bolos) countB++;
 if(rec.alpaApel) countAbsenApel++;
+if(rec.tidakUpacara) countUpacara++;
                 }
             });
 
@@ -1522,7 +1807,21 @@ const totalAlpaBersih =
     countA +
     alpaDariApel +
     alpaDariBolos;
-            const persen = Math.max(0, Math.round(((totalHariInput - totalAlpaBersih) / totalHariInput) * 100));
+// =======================
+// PERHITUNGAN DENDA
+// =======================
+
+const dendaApel = countAbsenApel * 5000;
+const dendaBolos = countB * 10000;
+const dendaUpacara = countUpacara * 15000;
+const dendaAlpa = totalAlpaBersih * 20000;
+
+const totalDenda =
+    dendaApel +
+    dendaBolos +
+    dendaUpacara +
+    dendaAlpa; 
+    const persen = Math.max(0, Math.round(((totalHariInput - totalAlpaBersih) / totalHariInput) * 100));
 
             let cardStyle = '';
             let percentStyle = 'percent-green';
@@ -1554,9 +1853,7 @@ Konversi Apel  : ${alpaDariApel} hari
 
 -----------------------------
 - Total Alpa Dihitung: *${totalAlpaBersih} hari*
-- Total Hari Kerja: *${totalHariInput} hari*`;
-
-            if (persen <= 79) {
+- Total Hari Kerja: *${totalHariInput} hari*`;            if (persen <= 79) {
 
     jumlahSanksi++;
 
@@ -1646,20 +1943,100 @@ color:#b45309;
     <span>I: <b>${countI}</b></span>
     <span>DL: <b>${countDL}</b></span>
     <span>A: <b>${countA}</b></span>
-    <span style="color:#991b1b;">B: <b>${countB}</b></span>
-    <span style="color:var(--danger)">Apel: <b>${countAbsenApel}x</b></span>
+
+    <span style="color:#991b1b;">
+        B: <b>${countB}</b>
+    </span>
+
+    <span style="color:var(--danger)">
+        Apel: <b>${countAbsenApel}x</b>
+    </span>
+
+    <span style="color:#7c3aed;">
+        Upac.: <b>${countUpacara}x</b>
+    </span>
 </div>
                 <div style="font-size:0.75rem; color:#64748b; margin-bottom:8px;">
-                    Total Alpa Bersih:
-<b>${totalAlpaBersih} hari</b>
+
+<b>Total Alpa Bersih : ${totalAlpaBersih} hari</b>
+
+<br>
 
 <small>
-Alpa: ${countA}
-+ Konversi Bolos: ${alpaDariBolos}
-+ Konversi Apel: ${alpaDariApel}
+Alpa Asli : ${countA} hari
+<br>
+Konversi Tidak Ikut Apel : ${alpaDariApel} hari
+<br>
+Konversi Bolos : ${alpaDariBolos} hari
 </small>
-                </div>
-                ${waBtnHtml}
+
+<br><br>
+<div style="
+background:#fff7ed;
+border:1px solid #fdba74;
+border-radius:8px;
+padding:10px;
+line-height:1.7;
+">
+
+<b style="color:#b45309;">
+💰 DENDA
+</b>
+
+<hr style="margin:6px 0;">
+
+Apel :
+${countAbsenApel} × Rp5.000
+=
+<b>Rp${dendaApel.toLocaleString('id-ID')}</b>
+
+Apel :
+${countAbsenApel} × Rp5.000
+<span style="float:right;font-weight:bold;">
+Rp${dendaApel.toLocaleString('id-ID')}
+</span>
+
+<br><br>
+
+Bolos :
+${countB} × Rp10.000
+<span style="float:right;font-weight:bold;">
+Rp${dendaBolos.toLocaleString('id-ID')}
+</span>
+
+<br><br>
+
+Tdk Ikut Upac. Bendera :
+${countUpacara} × Rp15.000
+<span style="float:right;font-weight:bold;">
+Rp${dendaUpacara.toLocaleString('id-ID')}
+</span>
+
+<br><br>
+
+Alpa :
+${totalAlpaBersih} × Rp20.000
+<span style="float:right;font-weight:bold;">
+Rp${dendaAlpa.toLocaleString('id-ID')}
+</span><hr style="margin:6px 0;">
+
+<div style="
+font-size:0.9rem;
+color:#b91c1c;
+font-weight:bold;
+">
+
+TOTAL DENDA
+
+<br>
+
+Rp${totalDenda.toLocaleString('id-ID')}
+
+</div>
+
+</div>
+
+</div>                ${waBtnHtml}
           <div style="text-align:center;margin-top:10px;">
     <button
     class="btn-detail"
@@ -1670,13 +2047,18 @@ Alpa: ${countA}
 <div class="detail-kehadiran" style="display:none;"></div>
 </div>
             `;
+// Simpan data ranking
             container.appendChild(cardElement);
         });
+// =====================================
+// URUTKAN RANKING
+// =====================================
 
         container.insertAdjacentHTML(
     'afterbegin',
     infoPeriodeHtml + dashboardHtml
 );
+
     }
 /* --- BAGIKAN REKAPAN RAPI KE WHATSAPP --- */
 function bagikanLinkRekapKeWA() {
@@ -1793,6 +2175,9 @@ ${strStart} s/d ${strEnd}
 ================================
 
 `;
+// ===============================
+// RANKING DISIPLIN GURU
+// ===============================
 
     dbGuru.forEach((g,index)=>{
 
@@ -1869,6 +2254,28 @@ Catatan:
     const url = "https://wa.me/?text=" + encodeURIComponent(pesan);
 
     window.open(url,"_blank");
+
+}
+function konfirmasiResetPeriode(strStart, strEnd){
+
+    const sudahPDF = confirm(
+`📄 PASTIKAN LAPORAN SUDAH DIARSIPKAN
+
+Sebelum menghapus data periode ini:
+
+✅ Cetak Rekapan PDF
+✅ Simpan PDF sebagai arsip sekolah
+
+Klik OK jika PDF sudah disimpan.
+
+Klik Cancel jika belum.`
+    );
+
+    if(!sudahPDF){
+        return;
+    }
+
+    window.resetRekapPeriode(strStart, strEnd);
 
 }
 </script>
