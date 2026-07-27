@@ -736,6 +736,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const guruRef = db.ref("guru");
 const presensiRef = db.ref("presensi");
+const arsipRef = db.ref("arsipPeriode");
 </script>
 
 <script>    const KEY_GURU = 'solor_guru_db';
@@ -762,6 +763,7 @@ function syncGuruDariFirebase(){
         if(data){
 
             dbGuru = Object.values(data);
+
 
         }else{
 
@@ -1077,11 +1079,18 @@ Apel :
 Bolos :
 <b>${data.bolos ? "⛔ Ya" : "✅ Tidak"}</b>
 
+${
+new Date(tgl).getDay() === 1
+?
+`
 <br>
 
 Upac. Bendera :
 <b>${data.tidakUpacara ? "🚩 Tidak Ikut" : "✅ Ikut"}</b>
 `
+:
+""
+}`
 :
 ""
 }
@@ -1107,7 +1116,59 @@ const totalDenda =
     dendaBolos +
     dendaUpacara +
     dendaAlpa;
+// ===============================
+// SKOR DISIPLIN
+// ===============================
+let skorDisiplin = 100;
 
+skorDisiplin -= (countAbsenApel * 5);
+skorDisiplin -= (countB * 10);
+skorDisiplin -= (countUpacara * 15);
+skorDisiplin -= (totalAlpaBersih * 20);
+
+// Batas minimum 0
+if (skorDisiplin < 0) {
+    skorDisiplin = 0;
+}
+rankingPrestasi.push({
+
+    nama: g.nama,
+
+    skor: skorDisiplin,
+
+    persen: persen,
+
+    denda: totalDenda,
+
+    alpa: totalAlpaBersih,
+
+    bolos: countB,
+
+    apel: countAbsenApel,
+
+    upacara: countUpacara
+
+});
+
+rankingPembinaan.push({
+
+    nama: g.nama,
+
+    skor: skorDisiplin,
+
+    persen: persen,
+
+    denda: totalDenda,
+
+    alpa: totalAlpaBersih,
+
+    bolos: countB,
+
+    apel: countAbsenApel,
+
+    upacara: countUpacara
+
+});
 html += `
 
 <div style="
@@ -1155,7 +1216,7 @@ Rp${dendaBolos.toLocaleString('id-ID')}
 <hr>
 
 <div style="display:flex;justify-content:space-between;">
-<span>🇮🇩 Tdk Ikut Upac. Bendera</span>
+<span>🚩 Tdk Ikut Upac. Bendera</span>
 <b>${countUpacara} × Rp15.000</b>
 </div>
 
@@ -1204,7 +1265,7 @@ margin-bottom:8px;
 </div>
 
 <div style="display:flex;justify-content:space-between;">
-<span>🇮🇩 Tdk Ikut Upac. Bendera</span>
+<span>🚩 Tdk Ikut Upac. Bendera</span>
 <b>${countUpacara}x</b>
 </div>
 
@@ -1457,7 +1518,8 @@ guruRef.child(id).remove()
         }
 
         const presensiHariIni = dataPresensi[tgl] || {};
-
+        const hari = new Date(tgl).getDay();
+const tampilUpacara = (hari === 1); // 1 = Senin
         dbGuru.forEach(g => {
             const statusExisting = presensiHariIni[g.id]?.status || 'H';
             const apelExisting = presensiHariIni[g.id]?.alpaApel || false;
@@ -1519,24 +1581,24 @@ guruRef.child(id).remove()
         <span> Tidak Ikut Apel</span>
     </label>
 
-    <label class="apel-check-wrapper">
-        <input
-            type="checkbox"
-            class="chk-upacara"
-            ${(presensiHariIni[g.id]?.tidakUpacara) ? 'checked' : ''}>
-        <span> Tidak Ikut Upac. Bendera</span>
-    </label>
-
-</div>
+    ${tampilUpacara ? `
 <label class="apel-check-wrapper">
-    <input type="checkbox"
-           class="chk-bolos"
-           ${presensiHariIni[g.id]?.bolos ? "checked":""}>
+    <input
+        type="checkbox"
+        class="chk-upacara"
+        ${(presensiHariIni[g.id]?.tidakUpacara) ? 'checked' : ''}>
+    <span> Tidak Ikut Upac. Bendera</span>
+</label>
+` : ""}
+<label class="apel-check-wrapper">
+    <input
+        type="checkbox"
+        class="chk-bolos"
+        ${presensiHariIni[g.id]?.bolos ? "checked" : ""}>
     <span> Bolos</span>
 </label>
-
-
             `;
+
             container.appendChild(card);
         });
     }
@@ -1566,12 +1628,25 @@ guruRef.child(id).remove()
 
     if(val === "H"){
 
-        apelWrap.style.display = "flex";
-        bolosWrap.style.display = "flex";
+    apelWrap.style.display = "flex";
+    bolosWrap.style.display = "flex";
+
+    // Tampilkan Upacara hanya hari Senin
+    const hari =
+        new Date(document.getElementById("tglInput").value).getDay();
+
+    if(hari === 1){
+
         upacaraWrap.style.display = "flex";
 
     }else{
 
+        upacara.checked = false;
+        upacaraWrap.style.display = "none";
+
+    }
+
+}else{
         apel.checked = false;
         bolos.checked = false;
         upacara.checked = false;
@@ -1685,6 +1760,8 @@ window.resetRekapPeriode = function(strStart, strEnd) {
     );
 };
     /* --- REKAPAN BULANAN --- */
+
+
     function renderRekap() {
         const blnVal = document.getElementById('filterBulan').value;
         const container = document.getElementById('listRekapArea');
@@ -1717,6 +1794,15 @@ window.resetRekapPeriode = function(strStart, strEnd) {
 
         const totalHariInput = datesInRange.length || 1;
         window.datesRekapAktif = datesInRange;
+        // ===============================
+// TOTAL DASHBOARD
+// ===============================
+let totalGuruDashboard = 0;
+let totalApelDashboard = 0;
+let totalBolosDashboard = 0;
+let totalUpacaraDashboard = 0;
+let totalAlpaDashboard = 0;
+let totalDendaDashboard = 0;
         const infoPeriodeHtml = `
 <div style="background:#e0f2fe;color:#0369a1;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:12px;text-align:center;">
 
@@ -1726,8 +1812,15 @@ window.resetRekapPeriode = function(strStart, strEnd) {
     </div>
 
     ${datesInRange.length > 0 && userRole === "admin" ? `
+      <br>
 
-           onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
+<button
+    onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
+    style="background:#dc2626;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+    🔒 Reset Data Periode
+</button>
+
+<br><br>
 
         <br>
 
@@ -1765,6 +1858,35 @@ window.resetRekapPeriode = function(strStart, strEnd) {
         <div class="icon">❌</div>
         <div class="angka">0</div>
         <div class="judul">Sanksi</div>
+    </div>
+
+</div>
+`;
+const rankingHtml = `
+<div class="ranking-box">
+
+    <div class="ranking-kiri">
+
+        <h3>🏆 Guru Berprestasi</h3>
+
+        <div id="rankingPrestasiArea">
+
+            <i>Memuat data...</i>
+
+        </div>
+
+    </div>
+
+    <div class="ranking-kanan">
+
+        <h3>📉 Guru Membutuhkan Pembinaan</h3>
+
+        <div id="rankingPembinaanArea">
+
+            <i>Memuat data...</i>
+
+        </div>
+
     </div>
 
 </div>
@@ -1914,6 +2036,14 @@ color:#b45309;
     jumlahAman++;
 
 }
+            totalGuruDashboard++;
+
+totalApelDashboard += countAbsenApel;
+totalBolosDashboard += countB;
+totalUpacaraDashboard += countUpacara;
+totalAlpaDashboard += totalAlpaBersih;
+totalDendaDashboard += totalDenda;
+
             const cardElement = document.createElement('div');
             cardElement.setAttribute("data-guru-id", g.id);
             cardElement.className = `rekap-card`;
@@ -2056,9 +2186,52 @@ Rp${totalDenda.toLocaleString('id-ID')}
 
         container.insertAdjacentHTML(
     'afterbegin',
-    infoPeriodeHtml + dashboardHtml
+    infoPeriodeHtml +
+    dashboardHtml +
+    rankingHtml
 );
+// ===============================
+// ISI KOTAK GURU BERPRESTASI
+// ===============================
+const rankingPrestasiArea =
+    document.getElementById("rankingPrestasiArea");
 
+if (rankingPrestasiArea) {
+
+    rankingPrestasiArea.innerHTML =
+        rankingPrestasi
+        .slice(0,3)
+        .map((g,index)=>`
+
+<div style="
+padding:8px 0;
+border-bottom:1px dashed #ddd;
+">
+
+<b>
+${index===0?"🥇":index===1?"🥈":"🥉"} ${g.nama}
+</b>
+
+<br>
+
+<small>
+
+Skor Disiplin :
+<b>${g.skor}</b>
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+
+Kehadiran :
+<b>${g.persen}%</b>
+
+</small>
+
+</div>
+
+`)
+.join("");
+
+}
     }
 /* --- BAGIKAN REKAPAN RAPI KE WHATSAPP --- */
 function bagikanLinkRekapKeWA() {
@@ -2178,7 +2351,11 @@ ${strStart} s/d ${strEnd}
 // ===============================
 // RANKING DISIPLIN GURU
 // ===============================
-
+// ======================================
+// DATA RANKING GURU
+// ======================================
+let rankingPrestasi = [];
+let rankingPembinaan = [];
     dbGuru.forEach((g,index)=>{
 
         let H=0,
@@ -2204,7 +2381,6 @@ if(rec.status==="B") B++;
 
 if(rec.alpaApel) APEL++;
         });
-
         const alpaDariApel = Math.floor(APEL / 3);
 const alpaDariBolos = Math.floor(B / 3);
 
