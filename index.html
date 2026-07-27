@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -752,14 +753,47 @@ let userRole = localStorage.getItem(KEY_ROLE) || '';
 // FIREBASE REFERENCES
 // ==========================
 
-
-
 function syncGuruDariFirebase(){
+
+    guruRef.on("value",(snapshot)=>{
+
+        const data = snapshot.val();
+
+        if(data){
+
+            dbGuru = Object.values(data);
+
+            localStorage.setItem(
+                KEY_GURU,
+                JSON.stringify(dbGuru)
+            );
+
+        }else{
+
+            dbGuru = JSON.parse(
+                localStorage.getItem(KEY_GURU)
+            ) || [];
+
+        }
+
+        renderDatabase();
+        loadPresensiTanggal();
+        renderRekap();
+
+    });
+
+}
 function syncPresensiDariFirebase(){
+
+    console.log("SYNC PRESENSI VERSI 27 JULI 2026");
 
     presensiRef.on("value",(snapshot)=>{
 
+        console.log("Firebase mengirim update presensi");
+
         const data = snapshot.val();
+
+        console.log(data);
 
         if(data){
 
@@ -778,32 +812,6 @@ function syncPresensiDariFirebase(){
 
         loadPresensiTanggal();
         renderRekap();
-
-    });
-
-}
-    guruRef.on("value",(snapshot)=>{
-
-        const data = snapshot.val();
-
-        if(data){
-
-            dbGuru = data;
-
-            localStorage.setItem(
-                KEY_GURU,
-                JSON.stringify(dbGuru)
-            );
-
-        }else{
-
-            dbGuru = JSON.parse(
-                localStorage.getItem(KEY_GURU)
-            ) || [];
-
-        }
-
-        renderDatabase();
 
     });
 
@@ -1075,34 +1083,74 @@ detail.innerHTML = html;
 }
     /* --- DATABASE MANAGEMENT --- */
     function simpanDatabaseGuru() {
-        const editId = document.getElementById('editGuruId').value;
-        const nama = document.getElementById('dbNama').value.trim();
-        const wa = document.getElementById('dbWA').value.trim();
 
-        if(!nama) {
-            showAlert("Peringatan", "Nama guru/pegawai wajib diisi!", "warning");
-            return;
-        }
+    const editId = document.getElementById('editGuruId').value;
+    const nama = document.getElementById('dbNama').value.trim();
+    const wa = document.getElementById('dbWA').value.trim();
 
-        if(editId) {
-            const guruIndex = dbGuru.findIndex(g => g.id == editId);
-            if(guruIndex !== -1) {
-                dbGuru[guruIndex].nama = nama;
-                dbGuru[guruIndex].wa = wa;
-                showAlert("Berhasil!", "Data guru berhasil diperbarui.", "success");
-            }
-        } else {
-            const newGuru = { id: Date.now(), nama, wa };
-            dbGuru.push(newGuru);
-            showAlert("Berhasil!", "Guru/Pegawai berhasil ditambahkan ke database.", "success");
-        }
-
-        localStorage.setItem(KEY_GURU, JSON.stringify(dbGuru));
-        guruRef.set(dbGuru);
-        batalEditGuru();
-        renderDatabase();
+    if(!nama){
+        showAlert(
+            "Peringatan",
+            "Nama guru/pegawai wajib diisi!",
+            "warning"
+        );
+        return;
     }
 
+    if(editId){
+
+        const guru = {
+            id:Number(editId),
+            nama:nama,
+            wa:wa
+        };
+
+        const idx = dbGuru.findIndex(g=>g.id==editId);
+
+        if(idx!=-1){
+            dbGuru[idx]=guru;
+        }
+
+        guruRef.child(editId).set(guru);
+
+        showAlert(
+            "Berhasil!",
+            "Data guru berhasil diperbarui.",
+            "success"
+        );
+
+    }else{
+
+        const id = Date.now();
+
+        const guru = {
+            id:id,
+            nama:nama,
+            wa:wa
+        };
+
+        dbGuru.push(guru);
+
+        guruRef.child(id).set(guru);
+
+        showAlert(
+            "Berhasil!",
+            "Guru/Pegawai berhasil ditambahkan ke database.",
+            "success"
+        );
+
+    }
+
+    localStorage.setItem(
+        KEY_GURU,
+        JSON.stringify(dbGuru)
+    );
+
+    batalEditGuru();
+
+    renderDatabase();
+
+}
     function editGuru(id) {
         const guru = dbGuru.find(g => g.id == id);
         if(guru) {
@@ -1129,41 +1177,89 @@ detail.innerHTML = html;
         document.getElementById('btnSimpanDb').style.background = "var(--primary)";
         document.getElementById('btnBatalEdit').style.display = "none";
     }
+  function renderDatabase() {
 
-    function hapusGuru(id) {
-        showConfirm("Konfirmasi Hapus", "Apakah Bapak yakin ingin menghapus guru ini dari database?", () => {
-            dbGuru = dbGuru.filter(g => g.id !== id);
-            localStorage.setItem(KEY_GURU, JSON.stringify(dbGuru));
-            renderDatabase();
-            showAlert("Terhapus", "Data guru telah berhasil dihapus.", "success");
-        });
+    const container = document.getElementById("listDatabaseArea");
+
+    if (!container) return;
+
+    if (dbGuru.length === 0) {
+
+        container.innerHTML =
+            '<p style="font-size:0.8rem;color:#94a3b8;text-align:center;">Belum ada data guru terdaftar.</p>';
+
+        return;
+
     }
 
-    function renderDatabase() {
-        const container = document.getElementById('listDatabaseArea');
-        if(dbGuru.length === 0) {
-            container.innerHTML = '<p style="font-size:0.8rem; color:#94a3b8; text-align:center;">Belum ada data guru terdaftar.</p>';
-            return;
-        }
+    let html = "";
 
-        let html = '';
-        dbGuru.forEach(g => {
-            html += `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
-                    <div>
-                        <div style="font-weight:700; font-size:0.85rem;">${g.nama}</div>
-                        <div style="font-size:0.75rem; color:#64748b;">WA: ${g.wa || '-'}</div>
+    dbGuru.forEach(g => {
+
+        html += `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;">
+
+                <div>
+                    <div style="font-weight:700;font-size:0.85rem;">
+                        ${g.nama}
                     </div>
-                    <div class="action-btns">
-                        <button class="btn-edit-guru" onclick="editGuru(${g.id})">Edit</button>
-                        <button class="btn-delete-guru" onclick="hapusGuru(${g.id})">Hapus</button>
+
+                    <div style="font-size:0.75rem;color:#64748b;">
+                        WA : ${g.wa || "-"}
                     </div>
                 </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
 
+                <div class="action-btns">
+
+                    <button class="btn-edit-guru"
+                        onclick="editGuru(${g.id})">
+                        Edit
+                    </button>
+
+                    <button class="btn-delete-guru"
+                        onclick="hapusGuru(${g.id})">
+                        Hapus
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
+    container.innerHTML = html;
+
+}
+    function hapusGuru(id) {
+
+    showConfirm(
+        "Konfirmasi Hapus",
+        "Apakah Bapak yakin ingin menghapus guru ini dari database?",
+        () => {
+
+            dbGuru = dbGuru.filter(g => g.id !== id);
+
+            localStorage.setItem(
+                KEY_GURU,
+                JSON.stringify(dbGuru)
+            );
+
+            // Hapus juga dari Firebase
+            guruRef.child(id).remove();
+
+            renderDatabase();
+
+            showAlert(
+                "Terhapus",
+                "Data guru telah berhasil dihapus.",
+                "success"
+            );
+
+        }
+    );
+
+}
     /* --- INPUT HARIAN --- */
     function loadPresensiTanggal() {
         const tgl = document.getElementById('tglInput').value;
@@ -1226,6 +1322,7 @@ detail.innerHTML = html;
     }
 
     function simpanPresensiHarian() {
+          console.log("Tombol Simpan Presensi ditekan");
         const tgl = document.getElementById('tglInput').value;
         if(!tgl) {
             showAlert("Peringatan", "Silakan pilih tanggal terlebih dahulu!", "warning");
@@ -1245,6 +1342,8 @@ detail.innerHTML = html;
 
         localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
         presensiRef.set(dataPresensi);
+        console.log("DATA YANG DIKIRIM KE FIREBASE");
+console.log(JSON.stringify(dataPresensi, null, 2));
         showAlert("Tersimpan!", "Data presensi tanggal " + tgl + " berhasil disimpan.", "success");
     }
 
