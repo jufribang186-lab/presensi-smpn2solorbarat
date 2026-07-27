@@ -1234,33 +1234,35 @@ detail.innerHTML = html;
    function hapusGuru(id) {
 
     showConfirm(
-        "Konfirmasi Hapus",
-        "Apakah Bapak yakin ingin menghapus guru ini dari database?",
-        () => {
+    "Konfirmasi Hapus",
+    "Apakah Bapak yakin ingin menghapus guru ini dari database?",
+    () => {
 
-            id = String(id);
+        console.log("ID yang akan dihapus =", id);
+        console.log("Isi dbGuru =", dbGuru);
 
-            dbGuru = dbGuru.filter(g => String(g.id) !== id);
+        id = String(id);
 
-            localStorage.setItem(
-                KEY_GURU,
-                JSON.stringify(dbGuru)
-            );
+        dbGuru = dbGuru.filter(g => String(g.id) !== id);
 
-            // Hapus dari Firebase
-            guruRef.child(id).remove();
+        localStorage.setItem(
+            KEY_GURU,
+            JSON.stringify(dbGuru)
+        );
 
-            renderDatabase();
+        // Hapus dari Firebase
+        guruRef.child(id).remove();
 
-            showAlert(
-                "Terhapus",
-                "Data guru telah berhasil dihapus.",
-                "success"
-            );
+        renderDatabase();
 
-        }
-    );
+        showAlert(
+            "Terhapus",
+            "Data guru telah berhasil dihapus.",
+            "success"
+        );
 
+    }
+);
 }    /* --- INPUT HARIAN --- */
     function loadPresensiTanggal() {
         const tgl = document.getElementById('tglInput').value;
