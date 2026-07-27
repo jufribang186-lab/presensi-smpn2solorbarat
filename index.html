@@ -780,7 +780,35 @@ function syncGuruDariFirebase(){
 
     });
 
-}    let pendingConfirmAction = null;
+} 
+function syncPresensiDariFirebase(){
+
+    presensiRef.on("value", (snapshot)=>{
+
+        const data = snapshot.val();
+
+        if(data){
+            dataPresensi = data;
+        }else{
+            dataPresensi = {};
+        }
+
+        localStorage.setItem(
+            KEY_PRESENSI,
+            JSON.stringify(dataPresensi)
+        );
+
+        // Refresh tampilan
+        loadPresensiTanggal();
+
+        if(document.getElementById("filterBulan").value){
+            renderRekap();
+        }
+
+    });
+
+}   
+let pendingConfirmAction = null;
 
     document.addEventListener("DOMContentLoaded", () => {
 
@@ -1315,11 +1343,32 @@ guruRef.child(id).remove()
         });
 
         localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
-        presensiRef.set(dataPresensi);
-        console.log("DATA YANG DIKIRIM KE FIREBASE");
-console.log(JSON.stringify(dataPresensi, null, 2));
-        showAlert("Tersimpan!", "Data presensi tanggal " + tgl + " berhasil disimpan.", "success");
-    }
+
+presensiRef
+.child(tgl)
+.set(dataPresensi[tgl])
+.then(() => {
+
+    console.log("Presensi berhasil disimpan ke Firebase");
+
+    showAlert(
+        "Tersimpan!",
+        "Data presensi tanggal " + tgl + " berhasil disimpan.",
+        "success"
+    );
+
+})
+.catch((err) => {
+
+    console.error(err);
+
+    showAlert(
+        "Gagal",
+        "Presensi gagal disimpan ke Firebase.",
+        "danger"
+    );
+
+});
 
     /* --- RESET PERIODE DENGAN PASSWORD --- */
 window.resetRekapPeriode = function(strStart, strEnd) {
