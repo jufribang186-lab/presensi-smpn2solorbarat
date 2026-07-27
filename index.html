@@ -1120,54 +1120,14 @@ const totalDenda =
 // ===============================
 let skorDisiplin = 100;
 
-skorDisiplin -= (countAbsenApel * 5);
-skorDisiplin -= (countB * 10);
+skorDisiplin -= (countApel * 5);
+skorDisiplin -= (countBolos * 10);
 skorDisiplin -= (countUpacara * 15);
-skorDisiplin -= (totalAlpaBersih * 20);
-
+skorDisiplin -= (totalAlpa * 20);
 // Batas minimum 0
 if (skorDisiplin < 0) {
     skorDisiplin = 0;
 }
-rankingPrestasi.push({
-
-    nama: g.nama,
-
-    skor: skorDisiplin,
-
-    persen: persen,
-
-    denda: totalDenda,
-
-    alpa: totalAlpaBersih,
-
-    bolos: countB,
-
-    apel: countAbsenApel,
-
-    upacara: countUpacara
-
-});
-
-rankingPembinaan.push({
-
-    nama: g.nama,
-
-    skor: skorDisiplin,
-
-    persen: persen,
-
-    denda: totalDenda,
-
-    alpa: totalAlpaBersih,
-
-    bolos: countB,
-
-    apel: countAbsenApel,
-
-    upacara: countUpacara
-
-});
 html += `
 
 <div style="
@@ -1623,7 +1583,7 @@ const tampilUpacara = (hari === 1); // 1 = Senin
 
     const apelWrap = apel.closest("label");
     const bolosWrap = bolos.closest("label");
-    const upacaraWrap = upacara.closest("label");
+    const upacaraWrap = upacara ? upacara.closest("label") : null;
 
     if(val === "H"){
 
@@ -1633,6 +1593,8 @@ const tampilUpacara = (hari === 1); // 1 = Senin
     // Tampilkan Upacara hanya hari Senin
     const hari =
         new Date(document.getElementById("tglInput").value).getDay();
+
+    if(upacara){
 
     if(hari === 1){
 
@@ -1645,15 +1607,20 @@ const tampilUpacara = (hari === 1); // 1 = Senin
 
     }
 
+}
 }else{
         apel.checked = false;
         bolos.checked = false;
-        upacara.checked = false;
+        if(upacara){
+    upacara.checked = false;
+}
 
-        apelWrap.style.display = "none";
-        bolosWrap.style.display = "none";
-        upacaraWrap.style.display = "none";
+apelWrap.style.display = "none";
+bolosWrap.style.display = "none";
 
+if(upacaraWrap){
+    upacaraWrap.style.display = "none";
+}
     }
 
 }
@@ -1671,7 +1638,7 @@ const tampilUpacara = (hari === 1); // 1 = Senin
         document.querySelectorAll('.guru-card').forEach(card => {
             const id = card.getAttribute('data-id');
             const selectedBtn = card.querySelector('.btn-status.selected');
-            const status = selectedBtn ? selectedBtn.getAttribute('data-val') : 'H';
+const status = selectedBtn ? selectedBtn.getAttribute('data-val') : 'H';
 
 let alpaApel =
     card.querySelector(".chk-apel").checked;
@@ -1679,8 +1646,12 @@ let alpaApel =
 let bolos =
     card.querySelector(".chk-bolos").checked;
 
+// Ambil checkbox Upacara jika memang ada
+const upacara =
+    card.querySelector(".chk-upacara");
+
 let tidakUpacara =
-    card.querySelector(".chk-upacara").checked;
+    upacara ? upacara.checked : false;
 
 // Jika bukan Hadir, semua pelanggaran otomatis nol
 if (status !== "H") {
@@ -1692,6 +1663,7 @@ if (status !== "H") {
 }
 
 dataPresensi[tgl][id] = {
+
     status,
 
     alpaApel,
@@ -1700,7 +1672,7 @@ dataPresensi[tgl][id] = {
 
     tidakUpacara
 
-};        });
+};});
 
         localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
 
