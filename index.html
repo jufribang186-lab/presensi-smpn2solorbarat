@@ -763,53 +763,18 @@ function syncGuruDariFirebase(){
 
             dbGuru = Object.values(data);
 
-            localStorage.setItem(
-                KEY_GURU,
-                JSON.stringify(dbGuru)
-            );
-
         }else{
 
-            dbGuru = JSON.parse(
-                localStorage.getItem(KEY_GURU)
-            ) || [];
-
-        }
-
-        renderDatabase();
-        loadPresensiTanggal();
-        renderRekap();
-
-    });
-
-}
-function syncPresensiDariFirebase(){
-
-    console.log("SYNC PRESENSI VERSI 27 JULI 2026");
-
-    presensiRef.on("value",(snapshot)=>{
-
-        console.log("Firebase mengirim update presensi");
-
-        const data = snapshot.val();
-
-        console.log(data);
-
-        if(data){
-
-            dataPresensi = data;
-
-        }else{
-
-            dataPresensi = {};
+            dbGuru = [];
 
         }
 
         localStorage.setItem(
-            KEY_PRESENSI,
-            JSON.stringify(dataPresensi)
+            KEY_GURU,
+            JSON.stringify(dbGuru)
         );
 
+        renderDatabase();
         loadPresensiTanggal();
         renderRekap();
 
