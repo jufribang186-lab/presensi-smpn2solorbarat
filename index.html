@@ -1231,21 +1231,23 @@ detail.innerHTML = html;
     container.innerHTML = html;
 
 }
-    function hapusGuru(id) {
+   function hapusGuru(id) {
 
     showConfirm(
         "Konfirmasi Hapus",
         "Apakah Bapak yakin ingin menghapus guru ini dari database?",
         () => {
 
-            dbGuru = dbGuru.filter(g => g.id !== id);
+            id = String(id);
+
+            dbGuru = dbGuru.filter(g => String(g.id) !== id);
 
             localStorage.setItem(
                 KEY_GURU,
                 JSON.stringify(dbGuru)
             );
 
-            // Hapus juga dari Firebase
+            // Hapus dari Firebase
             guruRef.child(id).remove();
 
             renderDatabase();
@@ -1259,8 +1261,7 @@ detail.innerHTML = html;
         }
     );
 
-}
-    /* --- INPUT HARIAN --- */
+}    /* --- INPUT HARIAN --- */
     function loadPresensiTanggal() {
         const tgl = document.getElementById('tglInput').value;
         const container = document.getElementById('listInputArea');
