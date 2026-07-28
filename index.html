@@ -1716,10 +1716,17 @@ window.resetRekapPeriode = function(strStart, strEnd) {
 
             if (inputPassword === PASS_BENAR) {
                 Object.keys(dataPresensi).forEach(dStr => {
-                    if (dStr >= strStart && dStr <= strEnd) {
-                        delete dataPresensi[dStr];
-                    }
-                });
+
+    if (dStr >= strStart && dStr <= strEnd) {
+
+        delete dataPresensi[dStr];
+
+        presensiRef.child(dStr).remove()
+        .catch(err => console.error("Gagal hapus Firebase:", err));
+
+    }
+
+});
 
                 localStorage.setItem(KEY_PRESENSI, JSON.stringify(dataPresensi));
                 renderRekap();
