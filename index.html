@@ -406,8 +406,42 @@
             font-weight: 600;
             cursor: pointer;
         }
+.btn-detail{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    border-radius:30px;
+    font-size:.82rem;
+    font-weight:700;
+    cursor:pointer;
+    transition:all .3s ease;
+    box-shadow:0 6px 18px rgba(37,99,235,.35);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-width:220px;
+    letter-spacing:.2px;
+}
 
-        .info-box {
+.btn-detail:hover{
+    transform:translateY(-3px);
+    box-shadow:0 10px 24px rgba(37,99,235,.45);
+}
+
+.btn-detail:active{
+    transform:scale(.97);
+}
+
+.btn-detail.open{
+    background:linear-gradient(135deg,#dc2626,#991b1b);
+    box-shadow:0 6px 18px rgba(220,38,38,.35);
+}
+
+.btn-detail.open:hover{
+    box-shadow:0 10px 24px rgba(220,38,38,.45);
+}        .info-box {
             font-size: 0.75rem;
             color: #64748b;
             line-height: 1.4;
@@ -1266,7 +1300,8 @@ Rp${totalDenda.toLocaleString('id-ID')}
 
 detail.innerHTML = html;
 
-        btn.innerHTML = "▲ Tutup Detail";
+        btn.innerHTML = "📂 Tutup Detail";
+btn.classList.add("open");
 
     }else{
 
