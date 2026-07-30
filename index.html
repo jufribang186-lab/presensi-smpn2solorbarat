@@ -2604,12 +2604,42 @@ window.persen = "100%";
 window.addEventListener('error', function (e) {
     if (e.message && e.message.includes('persen is not defined')) {
         window.persen = "100%";
-        e.preventDefault(); // Mencegah script berhenti/crash
+        e.preventDefault(); 
     }
 });
-/* --- PENYELAMAT VARIABEL PERSEN --- */
-window.persen = "100%";
 
+/* --- PENGINGAT HALAMAN & DETAIL KEHADIRAN (PASTI AKURAT) --- */
+
+// 1. Simpan setiap tombol/tab/menu yang diklik
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('button, a, [onclick]');
+    if (!btn) return;
+
+    const txt = btn.innerText ? btn.innerText.trim() : '';
+
+    // A. Jika mengklik tombol "Lihat Detail" atau "Sembunyikan Detail"
+    if (txt.includes('Detail')) {
+        setTimeout(() => {
+            const isOpened = txt.includes('Lihat'); // Jika tadi 'Lihat', berarti sekarang terbuka
+            if (isOpened) {
+                // Cari elemen induk untuk menyimpan identifier guru
+                const parent = btn.closest('tr, td, .card, div');
+                const guruInfo = parent ? parent.innerText.split('\n')[0].trim() : '';
+                localStorage.setItem('open_guru_detail', guruInfo);
+            } else {
+                localStorage.removeItem('open_guru_detail');
+            }
+        }, 100);
+        return;
+    }
+
+    // B. Jika mengklik menu utama (Pimpinan / Guru / Rekap / Harian)
+    if (txt.length > 0 && !txt.includes('Detail')) {
+        localStorage.setItem('last_active_button_text', txt);
+    }
+});
+
+// 2. Kembalikan posisi saat refresh
 window.addEventListener('error', function (e) {
     if (e.message && e.message.includes('persen is not defined')) {
         window.persen = "100%";
@@ -2618,8 +2648,5 @@ window.addEventListener('error', function (e) {
 });
 </script>
 
-
-</body>
-</html>
 </body>
 </html>
