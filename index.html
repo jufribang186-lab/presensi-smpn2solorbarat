@@ -852,16 +852,37 @@ let pendingConfirmAction = null;
 
     if(userRole === ''){
 
-        document.getElementById('halamanLogin').style.display = 'block';
-        document.querySelector('.container').style.display = 'none';
+    document.getElementById('halamanLogin').style.display = 'block';
+    document.querySelector('.container').style.display = 'none';
 
-    }else{
+}else{
 
-        document.getElementById('halamanLogin').style.display = 'none';
-        document.querySelector('.container').style.display = 'block';
+    document.getElementById('halamanLogin').style.display = 'none';
+    document.querySelector('.container').style.display = 'block';
+
+    if(userRole === "guru"){
+
+        document.getElementById("statusLoginHeader").textContent =
+            "👨‍🏫 Mode Guru | 🟡 View Only";
+
+        document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display = "none";
+        document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display = "none";
+
+        switchTabManual("tab-rekap");
+
+    }else if(userRole === "admin"){
+
+        document.getElementById("statusLoginHeader").innerHTML =
+            "👨‍💼 Pimpinan: Franci Hurint | 🟢 Akses Penuh";
+
+        document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display = "";
+        document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display = "";
+
+        switchTabManual("tab-input");
 
     }
 
+}
     syncGuruDariFirebase();
 syncPresensiDariFirebase();
 
