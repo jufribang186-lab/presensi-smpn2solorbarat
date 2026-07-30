@@ -2617,51 +2617,10 @@ window.addEventListener('error', function (e) {
     }
 });
 </script>
-<!-- MODAL AKSES AWAL (LANDING PAGE) -->
-<div id="modalAksesAwal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 99999; display: flex; align-items: center; justify-content: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <div style="background: #ffffff; padding: 35px 28px; border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); text-align: center; max-width: 400px; width: 90%;">
-        
-        <!-- Header Judul & Logo -->
-        <h2 style="margin: 0; font-size: 22px; font-weight: 800; color: #1e3a8a; display: flex; align-items: center; justify-content: center; gap: 10px;">
-            🏫 SMPN 2 SOLOR BARAT
-        </h2>
-        <p style="margin: 8px 0 25px 0; color: #64748b; font-size: 14px; font-weight: 500;">
-            Sistem Presensi Guru & Pegawai
-        </p>
-
-        <!-- Tombol Pilihan -->
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-            <button type="button" onclick="pilihAkses('pimpinan')" style="background-color: #1e40af; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(30, 64, 175, 0.3);">
-                👨‍💼💼 Login sebagai Pimpinan
-            </button>
-
-            <button type="button" onclick="pilihAkses('guru')" style="background-color: #16a34a; color: white; border: none; padding: 14px 20px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.3);">
-                👨‍🏫🏫 Masuk sebagai Guru
-            </button>
-        </div>
-
-    </div>
-</div>
-
-<script>
-function pilihAkses(role) {
-    // Sembunyikan modal pilihan awal
-    const modal = document.getElementById('modalAksesAwal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-
-    if (role === 'pimpinan') {
-        // Panggil fungsi login pimpinan jika ada
-        if (typeof bukaModalLoginPimpinan === 'function') bukaModalLoginPimpinan();
-        else if (typeof loginPimpinan === 'function') loginPimpinan();
-        else if (typeof showLogin === 'function') showLogin();
-    } else if (role === 'guru') {
-        // Panggil fungsi tampilan guru jika ada
-        if (typeof modeGuru === 'function') modeGuru();
-        else if (typeof showGuru === 'function') showGuru();
-    }
-}
+});
 </script>
+
+</body>
+</html>
 </body>
 </html>
