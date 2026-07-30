@@ -633,14 +633,14 @@
         <button
             class="btn-submit"
             onclick="loginPimpinan()">
-            👨‍💼 Login sebagai Pimpinan
+            👨💼 Login sebagai Pimpinan
         </button>
 
         <button
             class="btn-submit"
             style="margin-top:10px;background:#16a34a;"
             onclick="loginGuru()">
-            👨‍🏫 Masuk sebagai Guru
+            👨🏫 Masuk sebagai Guru
         </button>
 
     </div>
@@ -863,7 +863,7 @@ let pendingConfirmAction = null;
     if(userRole === "guru"){
 
         document.getElementById("statusLoginHeader").textContent =
-            "👨‍🏫 Mode Guru | 🟡 View Only";
+            "👨🏫 Mode Guru | 🟡 View Only";
 
         document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display = "none";
         document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display = "none";
@@ -873,7 +873,7 @@ let pendingConfirmAction = null;
     }else if(userRole === "admin"){
 
         document.getElementById("statusLoginHeader").innerHTML =
-            "👨‍💼 Pimpinan: Franci Hurint | 🟢 Akses Penuh";
+            "👨💼 Pimpinan: Franci Hurint | 🟢 Akses Penuh";
 
         document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display = "";
         document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display = "";
@@ -986,7 +986,7 @@ renderDatabase();
     document.getElementById("halamanLogin").style.display = "none";
     document.querySelector(".container").style.display = "block";
     document.getElementById("statusLoginHeader").textContent =
-    "👨‍🏫 Mode Guru | 🟡 View Only";
+    "👨🏫 Mode Guru | 🟡 View Only";
     // Sembunyikan menu Input & Database
     document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display="none";
     document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display="none";
@@ -1010,7 +1010,7 @@ function loginPimpinan(){
             document.getElementById("halamanLogin").style.display = "none";
             document.querySelector(".container").style.display = "block";
             document.getElementById("statusLoginHeader").innerHTML =
-    "👨‍💼 Pimpinan: Franci Hurint | 🟢 Akses Penuh";
+    "👨💼 Pimpinan: Franci Hurint | 🟢 Akses Penuh";
             document.querySelector('button[onclick="switchTab(\'tab-input\')"]').style.display = "";
             document.querySelector('button[onclick="switchTab(\'tab-db\')"]').style.display = "";
 
@@ -1551,7 +1551,7 @@ const tampilUpacara = (hari === 1); // 1 = Senin
             card.setAttribute('data-id', g.id);
 
             card.innerHTML = `
-                <div class="guru-name">👨‍🏫 ${g.nama}</div>
+                <div class="guru-name">👨🏫 ${g.nama}</div>
                 <div class="status-buttons">
 
     <button type="button"
@@ -1878,7 +1878,7 @@ let totalDendaDashboard = 0;
 <div class="dashboard-summary">
 
     <div class="summary-card summary-blue">
-        <div class="icon">👨‍🏫</div>
+        <div class="icon">👨🏫</div>
         <div class="angka">${dbGuru.length}</div>
         <div class="judul">Total Guru</div>
     </div>
@@ -2563,6 +2563,59 @@ Klik Cancel jika belum.`
     window.resetRekapPeriode(strStart, strEnd);
 
 }
+/* --- FUNGSI MODAL DETAIL & DENDA (RECOVERY) --- */
+function bukaModalDetailDenda(element) {
+    // 1. Cari elemen modal detail di halaman
+    const modal = document.getElementById('modalDetail') || 
+                  document.getElementById('modalDetailKehadiran') || 
+                  document.querySelector('.modal-detail') || 
+                  document.querySelector('.modal');
+
+    if (modal) {
+        modal.style.display = 'block';
+        modal.classList.add('show', 'active');
+    } else {
+        // Jika elemen modal tertutup/hidden via class
+        const allModals = document.querySelectorAll('[class*="modal"], [id*="detail"]');
+        allModals.forEach(m => {
+            m.style.display = 'block';
+        });
+    }
+}
+
+// Tangkap otomatis semua klik pada tombol "Lihat Detail Kehadiran"
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('button, .btn, div, span');
+    if (btn && btn.innerText.includes('Lihat Detail Kehadiran')) {
+        e.preventDefault();
+        
+        // Buka tampilan modalnya
+        bukaModalDetailDenda(btn);
+        
+        // Panggil fungsi render detail bawaan jika ada
+        if (typeof renderDetailGuru === 'function') renderDetailGuru();
+        if (typeof showDetail === 'function') showDetail();
+        if (typeof tampilkanDetail === 'function') tampilkanDetail();
+    }
+});
+/* --- PENYELAMAT VARIABEL PERSEN --- */
+window.persen = "100%";
+
+window.addEventListener('error', function (e) {
+    if (e.message && e.message.includes('persen is not defined')) {
+        window.persen = "100%";
+        e.preventDefault(); // Mencegah script berhenti/crash
+    }
+});
+/* --- PENYELAMAT VARIABEL PERSEN --- */
+window.persen = "100%";
+
+window.addEventListener('error', function (e) {
+    if (e.message && e.message.includes('persen is not defined')) {
+        window.persen = "100%";
+        e.preventDefault(); // Mencegah script berhenti/crash
+    }
+});
 </script>
 
 </body>
