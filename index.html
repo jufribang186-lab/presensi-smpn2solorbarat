@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,7 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pemantau Kehadiran - SMPN 2 Solor Barat</title>
     <style>
-        :root {
+        /* === KODE BARU TAMBAHAN KHUSUS CETAK PDF === */
+        @media print {
+            body * {
+                visibility: hidden !important;
+            }
+            button, nav, .nav-link, .tab-btn, input, select, #btn-cetak-pdf-langsung, .btn-cetak-pdf-container {
+                display: none !important;
+            }
+            table, table * {
+                visibility: visible !important;
+            }
+            table {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                border-collapse: collapse !important;
+                color: #000000 !important;
+                background: #ffffff !important;
+            }
+            th, td {
+                border: 1px solid #333 !important;
+                padding: 8px 10px !important;
+                font-size: 11pt !important;
+                color: #000000 !important;
+            }
+            th {
+                background-color: #f2f2f2 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        /* === AKHIR KODE CETAK PDF === */
+
+        /* KODE CSS LAMA/ASLI APLIKASI BOSKU TETAP ADA DI BAWAH INI (JANGAN DIHAPUS) */        :root {
             --primary: #1e3a8a;
             --primary-dark: #0f172a;
             --bg: #f1f5f9;
@@ -717,10 +750,40 @@
                 <label>Nama Lengkap:</label>
                 <input type="text" id="dbNama" placeholder="Contoh: Maria G. Srani, S.Pd">
             </div>
-            <div class="input-group">
-                <label>Nomor WhatsApp:</label>
-                <input type="text" id="dbWA" placeholder="Contoh: 081234567890">
-            </div>
+           <div class="input-group">
+    <label>Jenis PTK:</label>
+
+    <select id="dbJenisPTK">
+
+        <option value="Guru">👨🏫 Guru</option>
+
+        <option value="Pegawai">👨💼 Pegawai</option>
+
+    </select>
+
+</div>
+
+<div class="input-group">
+
+    <label>Jabatan:</label>
+
+    <input
+        type="text"
+        id="dbJabatan"
+        placeholder="Contoh: Kepala Sekolah / Guru IPA / Operator">
+
+</div>
+
+<div class="input-group">
+
+    <label>Nomor WhatsApp:</label>
+
+    <input
+        type="text"
+        id="dbWA"
+        placeholder="Contoh: 081234567890">
+
+</div>
             <button class="btn-submit" id="btnSimpanDb" onclick="simpanDatabaseGuru()">+ Tambah ke Database</button>
             <button class="btn-submit" id="btnBatalEdit" onclick="batalEditGuru()" style="background: #64748b; margin-top: 6px; display: none;">Batal Edit</button>
         </div>
@@ -1358,12 +1421,17 @@ btn.classList.add("open");
 
     if(editId){
 
-        const guru = {
-            id:Number(editId),
-            nama:nama,
-            wa:wa
-        };
+        const jenisPTK = document.getElementById("dbJenisPTK").value;
 
+const jabatan = document.getElementById("dbJabatan").value.trim();
+
+const guru = {
+    id: Number(editId),
+    nama: nama,
+    jenisPTK: jenisPTK,
+    jabatan: jabatan,
+    wa: wa
+};
         const idx = dbGuru.findIndex(g=>g.id==editId);
 
         if(idx!=-1){
@@ -1382,11 +1450,17 @@ btn.classList.add("open");
 
         const id = Date.now();
 
-        const guru = {
-            id:id,
-            nama:nama,
-            wa:wa
-        };
+const jenisPTK = document.getElementById("dbJenisPTK").value;
+
+const jabatan = document.getElementById("dbJabatan").value.trim();
+
+const guru = {
+    id: id,
+    nama: nama,
+    jenisPTK: jenisPTK,
+    jabatan: jabatan,
+    wa: wa
+};
 
         dbGuru.push(guru);
 
@@ -1415,7 +1489,15 @@ btn.classList.add("open");
         if(guru) {
             document.getElementById('editGuruId').value = guru.id;
             document.getElementById('dbNama').value = guru.nama;
-            document.getElementById('dbWA').value = guru.wa || '';
+
+document.getElementById('dbJenisPTK').value =
+guru.jenisPTK || "Guru";
+
+document.getElementById('dbJabatan').value =
+guru.jabatan || "";
+
+document.getElementById('dbWA').value =
+guru.wa || '';
 
             document.getElementById('formDbTitle').innerText = "Edit Data Guru / Pegawai";
             document.getElementById('btnSimpanDb').innerText = "Simpan Perubahan";
@@ -1429,7 +1511,12 @@ btn.classList.add("open");
     function batalEditGuru() {
         document.getElementById('editGuruId').value = "";
         document.getElementById('dbNama').value = "";
-        document.getElementById('dbWA').value = "";
+
+document.getElementById('dbJenisPTK').value = "Guru";
+
+document.getElementById('dbJabatan').value = "";
+
+document.getElementById('dbWA').value = "";
 
         document.getElementById('formDbTitle').innerText = "Tambah Guru / Pegawai";
         document.getElementById('btnSimpanDb').innerText = "+ Tambah ke Database";
@@ -1464,8 +1551,19 @@ btn.classList.add("open");
                     </div>
 
                     <div style="font-size:0.75rem;color:#64748b;">
-                        WA : ${g.wa || "-"}
-                    </div>
+Jenis PTK :
+<b>${g.jenisPTK || "Guru"}</b>
+</div>
+
+<div style="font-size:0.75rem;color:#64748b;">
+Jabatan :
+<b>${g.jabatan || "-"}</b>
+</div>
+
+<div style="font-size:0.75rem;color:#64748b;">
+WA :
+${g.wa || "-"}
+</div>
                 </div>
 
                 <div class="action-btns">
@@ -1804,10 +1902,11 @@ window.resetRekapPeriode = function(strStart, strEnd) {
 
 
     function renderRekap() {
+
         const blnVal = document.getElementById('filterBulan').value;
         const container = document.getElementById('listRekapArea');
         container.innerHTML = '';
-
+        window.dataRekapPDF = [];
         if(!blnVal) return;
 
         const [yearStr, monthStr] = blnVal.split('-');
@@ -1854,7 +1953,13 @@ let totalDendaDashboard = 0;
 
     ${datesInRange.length > 0 && userRole === "admin" ? `
       <br>
+<button
+    onclick="cetakRincianPDF()"
+    style="background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:.75rem;font-weight:700;cursor:pointer;margin-bottom:8px;">
+    📄 Cetak PDF / Print
+</button>
 
+<br>
 <button
     onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
     style="background:#dc2626;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">
@@ -1906,30 +2011,7 @@ let totalDendaDashboard = 0;
 const rankingHtml = `
 <div class="ranking-box">
 
-    <div class="ranking-kiri">
-
-        <h3>🏆 Guru Berprestasi</h3>
-
-        <div id="rankingPrestasiArea">
-
-            <i>Menunggu rekapan akhir...</i>
-
-        </div>
-
-    </div>
-
-    <div class="ranking-kanan">
-
-        <h3>📉 Guru Butuh Pembinaan</h3>
-
-        <div id="rankingPembinaanArea">
-
-            <i>Menunggu rekapan akhir...</i>
-
-        </div>
-
-    </div>
-
+    
 </div>
 `;
         if(datesInRange.length === 0) {
@@ -1939,6 +2021,8 @@ const rankingHtml = `
 let jumlahAman = 0;
 let jumlahPeringatan = 0;
 let jumlahSanksi = 0;
+let rankingPrestasi = [];
+let rankingPembinaan = [];
         dbGuru.forEach(g => {
             let countH = 0,
     countS = 0,
@@ -2287,9 +2371,123 @@ Denda tidak berlaku lagi dan Anda akan dikenakan sanksi sesuai kesepakatan sekol
 </div>
             `;
 // Simpan data ranking
-            container.appendChild(cardElement);
+
+const skorDisiplin =
+    (persen * 1000) -
+    (totalAlpaBersih * 100) -
+    (countB * 10) -
+    (countAbsenApel * 5);
+
+// ======================================
+// HANYA PTK YANG MEMENUHI SYARAT
+// ======================================
+
+if (
+    (g.jabatan || "") !== "Kepala Sekolah" &&
+    totalAlpaBersih === 0 &&
+    countB === 0 &&
+    totalDenda === 0
+) {
+
+    rankingPrestasi.push({
+
+    nama: g.nama,
+    jenisPTK: g.jenisPTK || "Guru",
+    jabatan: g.jabatan || "",
+    skor: skorDisiplin,
+    persen: persen
+
+});
+
+
+}
+
+rankingPembinaan.push({
+
+    nama: g.nama,
+    jenisPTK: g.jenisPTK || "Guru",
+    jabatan: g.jabatan || "",
+    skor: skorDisiplin,
+    persen: persen,
+    alpa: totalAlpaBersih,
+    bolos: countB,
+    denda: totalDenda
+
+});
+
+// ===============================
+// SIMPAN DATA UNTUK PDF
+// ===============================
+window.dataRekapPDF.push({
+
+    nama: g.nama,
+
+    persen: persen,
+
+    totalDenda: totalDenda,
+
+    status:
+        persen < 80
+        ? "🔴 SANKSI"
+        : (
+            persen <= 84
+            ? "🟡 PERINGATAN"
+            : "🟢 AMAN"
+        )
+
+});
+container.appendChild(cardElement);
         });
-// =====================================
+// ======================================
+// PISAHKAN GURU & PEGAWAI TELADAN
+// ======================================
+
+// ======================================
+// GURU TELADAN
+// ======================================
+
+const rankingGuru = rankingPrestasi
+.filter(r =>
+    r.jenisPTK === "Guru" &&
+    r.jabatan !== "Kepala Sekolah"
+)
+.sort((a,b)=>b.skor-a.skor)
+.slice(0,2);
+// ======================================
+// PEGAWAI TELADAN
+// ======================================
+
+const rankingPegawai = rankingPrestasi
+.filter(r =>
+    r.jenisPTK === "Pegawai"
+)
+.sort((a,b)=>b.skor-a.skor)
+.slice(0,2);
+
+// ======================================
+// PEMBINAAN
+// ======================================
+
+rankingPembinaan = rankingPembinaan
+.filter(r =>
+    r.alpa > 0 ||
+    r.bolos > 0 ||
+    r.denda > 0
+)
+.sort((a,b)=>{
+
+    if(a.persen !== b.persen)
+        return a.persen - b.persen;
+
+    if(a.alpa !== b.alpa)
+        return b.alpa - a.alpa;
+
+    if(a.bolos !== b.bolos)
+        return b.bolos - a.bolos;
+
+    return b.denda - a.denda;
+
+});// =====================================
 // URUTKAN RANKING
 // =====================================
 
@@ -2306,11 +2504,62 @@ const rankingPrestasiArea =
     document.getElementById("rankingPrestasiArea");
 
 if (rankingPrestasiArea) {
+const namaPenilai = `
+<div style="
+background:#eff6ff;
+border:1px solid #93c5fd;
+border-radius:12px;
+padding:12px;
+margin-bottom:18px;
+text-align:center;
+">
 
-    rankingPrestasiArea.innerHTML =
-        rankingPrestasi
-        .slice(0,3)
-        .map((g,index)=>`
+<div style="
+font-size:.72rem;
+font-weight:700;
+letter-spacing:1px;
+color:#64748b;
+">
+PENILAI
+</div>
+
+<div style="
+font-size:1.08rem;
+font-weight:700;
+color:#1e3a8a;
+margin-top:4px;
+">
+Franci Hurint
+</div>
+
+<div style="
+font-size:.82rem;
+color:#475569;
+">
+Pimpinan
+</div>
+
+<div style="
+margin-top:8px;
+font-size:.78rem;
+color:#334155;
+">
+Periode Penilaian :
+<b>${strStart}</b> s/d <b>${strEnd}</b>
+</div>
+
+</div>
+`;
+    rankingPrestasiArea.innerHTML = namaPenilai + `
+
+<h3 style="margin-bottom:10px;color:#2563eb;">
+🏆 GURU TELADAN
+</h3>
+
+${
+rankingGuru
+.slice(0,3)
+.map((g,index)=>`
 
 <div style="
 padding:8px 0;
@@ -2325,7 +2574,11 @@ ${index===0?"🥇":index===1?"🥈":"🥉"} ${g.nama}
 
 <small>
 
-Skor Disiplin :
+${g.jabatan}
+
+<br>
+
+Skor :
 <b>${g.skor}</b>
 
 &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -2337,8 +2590,53 @@ Kehadiran :
 
 </div>
 
-`)
-.join("");
+`).join("")
+}
+
+<hr style="margin:15px 0;">
+
+<h3 style="margin-bottom:10px;color:#059669;">
+🏆 PEGAWAI TELADAN
+</h3>
+
+${
+rankingPegawai
+.slice(0,3)
+.map((g,index)=>`
+
+<div style="
+padding:8px 0;
+border-bottom:1px dashed #ddd;
+">
+
+<b>
+${index===0?"🥇":index===1?"🥈":"🥉"} ${g.nama}
+</b>
+
+<br>
+
+<small>
+
+${g.jabatan}
+
+<br>
+
+Skor :
+<b>${g.skor}</b>
+
+&nbsp;&nbsp;|&nbsp;&nbsp;
+
+Kehadiran :
+<b>${g.persen}%</b>
+
+</small>
+
+</div>
+
+`).join("")
+}
+
+`;
 
 }
     }
@@ -2543,25 +2841,30 @@ Catatan:
 }
 function konfirmasiResetPeriode(strStart, strEnd){
 
-    const sudahPDF = confirm(
-`📄 PASTIKAN LAPORAN SUDAH DIARSIPKAN
+   // Tanyakan ke pengguna apakah ingin mencetak PDF sekarang
+    const mauCetak = confirm(
+`📄 CETAK & ARSIPKAN LAPORAN
 
-Sebelum menghapus data periode ini:
+Apakah Anda ingin MENCETAK / MENYIMPAN PDF sekarang sebelum data periode ini dihapus?
 
-✅ Cetak Rekapan PDF
-✅ Simpan PDF sebagai arsip sekolah
-
-Klik OK jika PDF sudah disimpan.
-
-Klik Cancel jika belum.`
+• Klik OK  : Untuk Membuka Cetak PDF / Print
+• Klik CANCEL : Jika sudah pernah cetak atau ingin batal`
     );
 
-    if(!sudahPDF){
+    if (mauCetak) {
+        // Otomatis buka jendela cetak PDF browser
+        window.print();
+        return; // Hentikan reset dulu agar pengguna bisa simpan PDF dengan tenang
+    }
+
+    // Konfirmasi akhir untuk menghapus data
+    const yakinHapus = confirm("⚠️ PERINGATAN AKHIR!\n\nApakah Anda YAKIN ingin menghapus data periode ini?");
+    
+    if (!yakinHapus) {
         return;
     }
 
     window.resetRekapPeriode(strStart, strEnd);
-
 }
 /* --- FUNGSI MODAL DETAIL & DENDA (RECOVERY) --- */
 function bukaModalDetailDenda(element) {
@@ -2646,7 +2949,208 @@ window.addEventListener('error', function (e) {
         e.preventDefault(); // Mencegah script berhenti/crash
     }
 });
-</script>
 
+// =====================================
+// FUNGSI CETAK PDF
+// =====================================
+
+function cetakRincianPDF(){
+
+    const win = window.open("", "_blank");
+     let isiTabelPDF = "";
+
+window.dataRekapPDF.forEach((g,i)=>{
+
+    isiTabelPDF += `
+<tr>
+
+<td>${i+1}</td>
+
+<td style="text-align:left;">${g.nama}</td>
+
+<td>${g.persen}%</td>
+
+<td>Rp${g.totalDenda.toLocaleString("id-ID")}</td>
+
+<td>${g.status}</td>
+
+</tr>
+`;
+
+});const blnVal = document.getElementById("filterBulan").value;
+const jumlahGuru = window.dataRekapPDF.length;
+
+const jumlahAman =
+    window.dataRekapPDF.filter(g=>g.status.includes("AMAN")).length;
+
+const jumlahPeringatan =
+    window.dataRekapPDF.filter(g=>g.status.includes("PERINGATAN")).length;
+
+const jumlahSanksi =
+    window.dataRekapPDF.filter(g=>g.status.includes("SANKSI")).length;
+
+const totalDendaSekolah =
+    window.dataRekapPDF.reduce(
+        (t,g)=>t+g.totalDenda,
+        0
+    );
+    win.document.write(`
+<html>
+
+<head>
+
+<title>Rekap Kehadiran Guru</title>
+
+<style>
+
+body{
+    font-family:Arial, sans-serif;
+    margin:40px;
+    font-size:13px;
+    color:#111;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.header h1{
+    margin:0;
+    font-size:20px;
+}
+
+.header h2{
+    margin:4px 0;
+    font-size:17px;
+}
+
+.header h3{
+    margin:8px 0;
+    font-size:16px;
+}
+
+.periode{
+    margin-top:18px;
+    font-size:14px;
+    line-height:1.8;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th,td{
+    border:1px solid #000;
+    padding:6px;
+    text-align:center;
+}
+
+th{
+    background:#e5e7eb;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+<h1>PEMERINTAH KABUPATEN FLORES TIMUR</h1>
+
+<h2>DINAS PENDIDIKAN, KEPEMUDAAN DAN OLAHRAGA</h2>
+
+<h2 style="
+font-size:20px;
+font-weight:900;
+color:#b91c1c;
+letter-spacing:2px;
+font-family:'Times New Roman', serif;
+margin-top:8px;
+margin-bottom:8px;
+">
+SMP NEGERI 2 SOLOR BARAT
+</h2>
+<div style="
+font-size:14px;
+font-family:'Times New Roman', serif;
+font-style:italic;
+color:#444;
+margin-top:-4px;
+margin-bottom:15px;
+">
+Kalike Aimatan - Kecamatan Solor Selatan, Kabupaten Flores Timur
+</div>
+<hr style="margin:15px 0;">
+
+<h2 style="margin-top:20px;">
+LAPORAN REKAP KEHADIRAN GURU & PEGAWAI
+</h2>
+
+<table style="width:100%;border:none;margin-top:20px;">
+
+<tr>
+
+<td style="border:none;text-align:left;width:180px;">
+Periode
+</td>
+
+<td style="border:none;text-align:left;">
+:
+<b>${blnVal}</b>
+</td>
+
+</tr>
+
+<tr>
+
+<td style="border:none;text-align:left;">
+Tanggal Cetak
+</td>
+
+<td style="border:none;text-align:left;">
+:
+<b>${new Date().toLocaleDateString("id-ID")}</b>
+</td>
+
+</tr>
+
+</table>
+
+<hr style="margin:18px 0;">
+
+</div>
+<table>
+
+<tr>
+
+<th>No</th>
+
+<th>Nama Guru</th>
+
+<th>Kehadiran</th>
+
+<th>Total Denda</th>
+
+<th>Status</th></tr>
+
+${isiTabelPDF}
+</table>
+
+</body>
+
+</html>
+`);
+    win.document.close();
+
+    win.print();
+
+}
+
+</script>
 </body>
 </html>
