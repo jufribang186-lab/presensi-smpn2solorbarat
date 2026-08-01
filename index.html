@@ -453,7 +453,7 @@
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
+    gap:6px;
     min-width:220px;
     letter-spacing:.2px;
 }
@@ -1952,30 +1952,37 @@ let totalDendaDashboard = 0;
     </div>
 
     ${datesInRange.length > 0 && userRole === "admin" ? `
-      <br>
+
+<div style="
+display:flex;
+justify-content:space-evenly;
+align-items:center;
+gap:6px;
+flex-wrap:wrap;
+margin-top:10px;
+">
 <button
     onclick="cetakRincianPDF()"
-    style="background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:.75rem;font-weight:700;cursor:pointer;margin-bottom:8px;">
+    style="background:#2563eb;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:.75rem;font-weight:700;cursor:pointer;margin-bottom:8px;">
     📄 Cetak PDF / Print
 </button>
 
 <br>
 <button
     onclick="window.resetRekapPeriode('${strStart}','${strEnd}')"
-    style="background:#dc2626;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+    style="background:#dc2626;position:relative;
+top:-2px;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;">
     🔒 Reset Data Periode
 </button>
-
-<br><br>
-
-        <br>
+<br>
+    <br>
 
         <button
             onclick="bagikanRekapGrupWA()"
-            style="background:#25D366;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;margin-top:8px;">
-            📢 Kirim Rekap Grup Sekolah
+            style="background:#25D366;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.75rem;font-weight:700;cursor:pointer;margin-top:0px;">
+            📢 Kirim Ke WAG Sklh
         </button>
-
+        </div>
     ` : ''}
 
 </div>
