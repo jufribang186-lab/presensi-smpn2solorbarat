@@ -1948,6 +1948,16 @@ let totalDendaDashboard = 0;
 
     <div style="font-weight:600;margin-bottom:8px;">
         Periode Perhitungan:<br>
+        <br><br>
+
+<button
+    onclick="cetakRincianPDF()"
+    ...
+>
+    📄 Lihat Data PDF
+</button>
+
+<br><br>
         ${strStart} s/d ${strEnd}
     </div>
 
@@ -2997,7 +3007,8 @@ window.dataRekapPDF.forEach((g,i)=>{
 </tr>
 `;
 
-});const blnVal = document.getElementById("filterBulan").value;
+});
+const blnVal = document.getElementById("filterBulan").value;
 const jumlahGuru = window.dataRekapPDF.length;
 
 const jumlahAman =
@@ -3167,10 +3178,15 @@ ${isiTabelPDF}
 `);
     win.document.close();
 
-    win.print();
 
 }
+function lihatDataPDF(){
 
+    window.modePreviewPDF = true;
+
+    cetakRincianPDF();
+
+}
 </script>
 </body>
 </html>
