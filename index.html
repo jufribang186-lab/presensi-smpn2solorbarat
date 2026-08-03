@@ -3000,10 +3000,11 @@ window.addEventListener('error', function (e) {
 // FUNGSI CETAK PDF
 // =====================================
 
-function cetakRincianPDF(){
+function cetakRincianPDF(win = null){
 
-    const win = window.open("", "_blank");
-     let isiTabelPDF = "";
+    if(!win){
+        win = window.open("", "_blank");
+    }     let isiTabelPDF = "";
 
 window.dataRekapPDF.forEach((g,i)=>{
 
@@ -3194,6 +3195,15 @@ ${isiTabelPDF}
 `);
     win.document.close();
 
+if(window.modePreviewPDF){
+
+    window.modePreviewPDF = false;
+
+}else{
+
+    win.print();
+
+}
 
 }
 function lihatDataPDF(){
