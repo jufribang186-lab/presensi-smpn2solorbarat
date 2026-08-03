@@ -1947,20 +1947,29 @@ let totalDendaDashboard = 0;
 <div style="background:#e0f2fe;color:#0369a1;padding:10px 14px;border-radius:8px;font-size:0.85rem;margin-bottom:12px;text-align:center;">
 
     <div style="font-weight:600;margin-bottom:8px;">
-        Periode Perhitungan:<br>
-        <br><br>
+    Periode Perhitungan:
+<br>
 
-<button
-    onclick="cetakRincianPDF()"
-    ...
->
-    📄 Lihat Data PDF
-</button>
+${strStart} s/d ${strEnd}
 
 <br><br>
-        ${strStart} s/d ${strEnd}
-    </div>
 
+<button
+    onclick="lihatDataPDF()"
+    style="
+        background:#2563eb;
+        color:white;
+        border:none;
+        padding:8px 18px;
+        border-radius:8px;
+        cursor:pointer;
+        font-size:14px;
+        font-weight:bold;
+        margin-top:4px;
+    ">
+    📄 Lihat Data PDF
+</button>
+</div>
     ${datesInRange.length > 0 && userRole === "admin" ? `
 
 <div style="
