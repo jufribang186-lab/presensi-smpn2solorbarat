@@ -551,6 +551,9 @@
 .summary-gray{
     background:linear-gradient(135deg,#64748b,#475569);
 }
+.summary-indigo{
+    background:linear-gradient(135deg,#4f46e5,#3730a3);
+}
 /* --- CUSTOM MODAL POP-UP STYLES --- */
 
         /* --- CUSTOM MODAL POP-UP STYLES --- */
@@ -2052,6 +2055,13 @@ top:-2px;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.7
     <div class="angka">${dbGuru.filter(p => p.jenisPTK !== "Guru").length}</div>
     <div class="judul">Total Pegawai</div>
 </div>
+<div class="summary-card summary-indigo">
+    <div class="icon">👥</div>
+    <div class="angka">
+        ${dbGuru.length}
+    </div>
+    <div class="judul">Total Guru & Pegawai</div>
+</div>
 
 <div class="summary-card summary-green">
     <div class="icon">✅</div>
@@ -2070,11 +2080,7 @@ top:-2px;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.7
     <div class="angka">0</div>
     <div class="judul">Sanksi</div>
 </div>
-<div class="summary-card summary-gray">
-    <div class="icon">💡</div>
-    <div class="angka" style="font-size:14px; line-height:1;">Blank Card</div>
-    
-</div>
+
 </div>
 `;
 const rankingHtml = `
