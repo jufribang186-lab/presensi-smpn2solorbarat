@@ -497,12 +497,10 @@
 
 .dashboard-summary{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
     margin-bottom:15px;
-}
-
-.summary-card{
+}.summary-card{
     border-radius:14px;
     padding:15px;
     color:#fff;
@@ -531,6 +529,10 @@
     background:linear-gradient(135deg,#2563eb,#1d4ed8);
 }
 
+.summary-purple{
+    background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+}
+
 .summary-green{
     background:linear-gradient(135deg,#16a34a,#15803d);
 }
@@ -542,7 +544,6 @@
 .summary-red{
     background:linear-gradient(135deg,#dc2626,#991b1b);
 }
-
 /* --- CUSTOM MODAL POP-UP STYLES --- */
 
         /* --- CUSTOM MODAL POP-UP STYLES --- */
@@ -845,6 +846,11 @@ let userRole = localStorage.getItem(KEY_ROLE) || '';
         { id: 1, nama: "Guru Sample 1", wa: "081234567890" },
         { id: 2, nama: "Guru Sample 2", wa: "081234567891" }
     ];
+    const KEY_PEGAWAI = "solor_pegawai_db";
+
+let dbPegawai = JSON.parse(localStorage.getItem(KEY_PEGAWAI)) || [
+    { id: 1, nama: "Pegawai Sample 1", wa: "081234567892" }
+];
     let dataPresensi = JSON.parse(localStorage.getItem(KEY_PRESENSI)) || {};
     // ==========================
 // FIREBASE REFERENCES
@@ -2029,29 +2035,34 @@ top:-2px;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.7
 <div class="dashboard-summary">
 
     <div class="summary-card summary-blue">
-        <div class="icon">👨🏫</div>
-        <div class="angka">${dbGuru.length}</div>
-        <div class="judul">Total Guru</div>
-    </div>
+    <div class="icon">👨🏫</div>
+    <div class="angka">${dbGuru.length}</div>
+    <div class="judul">Total Guru</div>
+</div>
 
-    <div class="summary-card summary-green">
-        <div class="icon">✅</div>
-        <div class="angka">0</div>
-        <div class="judul">Aman</div>
-    </div>
+<div class="summary-card summary-purple">
+    <div class="icon">👨‍💼</div>
+    <div class="angka">${dbPegawai.length}</div>
+    <div class="judul">Total Pegawai</div>
+</div>
 
-    <div class="summary-card summary-yellow">
-        <div class="icon">⚠️</div>
-        <div class="angka">0</div>
-        <div class="judul">Peringatan</div>
-    </div>
+<div class="summary-card summary-green">
+    <div class="icon">✅</div>
+    <div class="angka">0</div>
+    <div class="judul">Aman</div>
+</div>
 
-    <div class="summary-card summary-red">
-        <div class="icon">❌</div>
-        <div class="angka">0</div>
-        <div class="judul">Sanksi</div>
-    </div>
+<div class="summary-card summary-yellow">
+    <div class="icon">⚠️</div>
+    <div class="angka">0</div>
+    <div class="judul">Peringatan</div>
+</div>
 
+<div class="summary-card summary-red">
+    <div class="icon">❌</div>
+    <div class="angka">0</div>
+    <div class="judul">Sanksi</div>
+</div>
 </div>
 `;
 const rankingHtml = `
