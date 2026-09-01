@@ -1942,8 +1942,8 @@ window.resetRekapPeriode = function(strStart, strEnd) {
         const year = parseInt(yearStr, 10);
         const month = parseInt(monthStr, 10); 
 
-        const startObj = new Date(year, month - 2, 16);
-        const endObj = new Date(year, month - 1, 14);
+        const startObj = new Date(year, month - 1, 1);
+const endObj = new Date(year, month, 0);
 
         const formatDate = (d) => {
             let m = '' + (d.getMonth() + 1);
@@ -1951,7 +1951,7 @@ window.resetRekapPeriode = function(strStart, strEnd) {
             let y = d.getFullYear();
             if (m.length < 2) m = '0' + m;
             if (day.length < 2) day = '0' + day;
-            return [y, m, day].join('-');
+            return [day, m, y].join('-');
         };
 
         const strStart = formatDate(startObj);
@@ -2051,7 +2051,7 @@ top:-2px;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.7
 </div>
 
 <div class="summary-card summary-purple">
-    <div class="icon">👨‍💼</div>
+    <div class="icon">👨💼</div>
     <div class="angka">${dbGuru.filter(p => p.jenisPTK !== "Guru").length}</div>
     <div class="judul">Total Pegawai</div>
 </div>
