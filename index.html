@@ -1030,7 +1030,7 @@ renderDatabase();
             
             // Beri sedikit jeda 200ms agar animasi pop-up mulus
             setTimeout(() => {
-                if(enteredPass === RESET_PASSWORD) {
+                if(enteredPass === 'franci31') {
                     // JIKA BENAR: Jalankan reset data lalu tampilkan alert sukses
                     onConfirm();
                 } else {
@@ -1818,6 +1818,7 @@ if(upacaraWrap){
     function simpanPresensiHarian() {
           console.log("Tombol Simpan Presensi ditekan");
         const tgl = document.getElementById('tglInput').value;
+console.log("FORMAT TANGGAL:", tgl);
         if(!tgl) {
             showAlert("Peringatan", "Silakan pilih tanggal terlebih dahulu!", "warning");
             return;
@@ -1957,9 +1958,11 @@ const endObj = new Date(year, month, 0);
         const strStart = formatDate(startObj);
         const strEnd = formatDate(endObj);
 
-        const datesInRange = Object.keys(dataPresensi).filter(dStr => {
-            return dStr >= strStart && dStr <= strEnd;
-        }).sort();
+        const bulanFilter = String(month).padStart(2, '0');
+
+const datesInRange = Object.keys(dataPresensi).filter(dStr => {
+    return dStr.startsWith(`${year}-${bulanFilter}-`);
+}).sort();
 
         const totalHariInput = datesInRange.length || 1;
         window.datesRekapAktif = datesInRange;
@@ -2136,7 +2139,7 @@ const totalAlpaBersih =
 const dendaApel = countAbsenApel * 5000;
 const dendaBolos = countB * 10000;
 const dendaUpacara = countUpacara * 15000;
-const dendaAlpa = totalAlpaBersih * 20000;
+const dendaAlpa = Number(totalAlpaBersih || 0) * 20000;
 
     const persen = Math.max(0, Math.round(((totalHariInput - totalAlpaBersih) / totalHariInput) * 100));
 let totalDenda =
@@ -2215,10 +2218,11 @@ Sesuai kesepakatan SMPN 2 Solor Barat, Anda akan dikenakan sanksi sehingga *dend
 
 Silakan berkoordinasi dengan Pimpinan sekolah.
 
-Terima kasih.`;
+Terima kasih.
+Admin`;
                     
                     const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
-                    waBtnHtml = `<a href="${waUrl}" target="_blank" class="btn-wa-mobile" style="background: #dc2626;"> Kirim WA Sanksi (<=79%)</a>`;
+                    waBtnHtml = `<button type="button" class="btn-wa-mobile" style="background:#dc2626;border:none;cursor:pointer;" onclick="window.open('${waUrl}', '_blank')">Kirim WA Sanksi (<=79%)</button>`;
                 }
 
            } else if (persen >= 80 && persen <= 84) {
@@ -2243,10 +2247,11 @@ color:#b45309;
         let cleanWA = g.wa.replace(/[^0-9]/g, '');
         if (cleanWA.startsWith('0')) cleanWA = '62' + cleanWA.slice(1);
 
-        const msg = `Yth. Bapak/Ibu *${g.nama}*,\n\nInformasi Kehadiran SMPN 2 Solor Barat Periode (*${strStart} s/d ${strEnd}*):\n\nPersentase Kehadiran Anda saat ini: *${persen}%* (PERINGATAN).\n\n${rincianTeks}\n\nMohon agar dapat meningkatkan kehadiran Anda. Jika persentase turun hingga ≤79%, maka akan dikenakan sanksi sesuai kesepakatan. Terima kasih.`;
+        const msg = `Yth. Bapak/Ibu *${g.nama}*,\n\nInformasi Kehadiran SMPN 2 Solor Barat Periode (*${strStart} s/d ${strEnd}*):\n\nPersentase Kehadiran Anda saat ini: *${persen}%* (PERINGATAN).\n\n${rincianTeks}\n\nMohon agar dapat meningkatkan kehadiran Anda. Jika persentase turun hingga ≤79%, maka akan dikenakan sanksi sesuai kesepakatan. Terima kasih.
+Admin`;
 
         const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
-        waBtnHtml = `<a href="${waUrl}" target="_blank" class="btn-wa-mobile" style="background: #d97706;">Kirim WA Peringatan</a>`;
+        waBtnHtml = `<button type="button" class="btn-wa-mobile" style="background:#d97706;border:none;cursor:pointer;" onclick="window.open('${waUrl}', '_blank')">Kirim WA Peringatan</button>`;
     }
 
 } else {
@@ -2378,7 +2383,7 @@ TOTAL DENDA
 
 <br>
 
-Rp${totalDenda.toLocaleString('id-ID')}
+Rp${dendaApel.toLocaleString('id-ID')}
 
 </div>
 
@@ -2493,13 +2498,19 @@ rankingPembinaan.push({
 // ===============================
 // SIMPAN DATA UNTUK PDF
 // ===============================
+const totalDendaPDF =
+    dendaApel +
+    dendaBolos +
+    dendaUpacara +
+    dendaAlpa;
+
 window.dataRekapPDF.push({
 
     nama: g.nama,
 
     persen: persen,
 
-    totalDenda: totalDenda,
+    totalDenda: totalDendaPDF,
 
     status:
         persen < 80
@@ -2798,8 +2809,8 @@ function bagikanRekapGrupWA() {
     const year = parseInt(yearStr);
     const month = parseInt(monthStr);
 
-    const startObj = new Date(year, month - 2, 16);
-    const endObj   = new Date(year, month - 1, 14);
+    const startObj = new Date(year, month - 1, 1);
+const endObj   = new Date(year, month, 0);
 
     function formatDate(d){
         const m = String(d.getMonth()+1).padStart(2,'0');
@@ -2874,6 +2885,7 @@ const dendaAlpa = totalAlpa * 20000;
 let totalDenda =
     dendaApel +
     dendaBolos +
+    dendaUpacara +
     dendaAlpa;
 
 
@@ -2883,9 +2895,7 @@ let totalDenda =
                 ((totalHari-totalAlpa)/totalHari)*100
             )
         );
-if (persen < 80) {
-    totalDenda = 0;
-}
+
 
         let ikon="✅";
 
