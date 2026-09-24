@@ -2144,9 +2144,11 @@ let totalDenda =
 // Jika sudah masuk kategori sanksi,
 // denda tidak lagi diberlakukan.
 if (persen < 80) {
-
-    totalDenda = 0;
-
+    totalDenda =
+        dendaApel +
+        dendaBolos +
+        dendaUpacara +
+        dendaAlpa;
 }
 
             let cardStyle = '';
@@ -2197,7 +2199,11 @@ const adaPeringatan =
 if (persen <= 79) {
 
     jumlahSanksi++;
-    totalDenda = 0;
+    totalDenda =
+    dendaApel +
+    dendaBolos +
+    dendaUpacara +
+    dendaAlpa;
 
     cardStyle = 'border-left-color: #dc2626; background: #fef2f2;';
     percentStyle = 'percent-red';
