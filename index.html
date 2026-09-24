@@ -1244,19 +1244,12 @@ const dendaBolos = countBolos * 10000;
 const dendaUpacara = countUpacara * 15000;
 const dendaAlpa = totalAlpa * 20000;
 
-let totalDenda =
+const totalDenda =
     dendaApel +
     dendaBolos +
     dendaUpacara +
     dendaAlpa;
-
-// Jika sudah masuk kategori sanksi,
-// denda tidak lagi diberlakukan.
-if (persen < 80) {
-
-    totalDenda = 0;
-
-}// ===============================
+// ===============================
 // SKOR DISIPLIN
 // ===============================
 let skorDisiplin = 100;
@@ -2383,7 +2376,7 @@ TOTAL DENDA
 
 <br>
 
-Rp${dendaApel.toLocaleString('id-ID')}
+Rp${totalDenda.toLocaleString('id-ID')}
 
 </div>
 
