@@ -743,13 +743,16 @@
 
         <div id="listRekapArea"></div>
 
-        <div class="info-box">
-            <strong>Ketentuan Perhitungan:</strong><br>
-            • <strong>3x Absen Apel Pagi</strong> = Hitung 1x Alpa Tambahan.<br>
-            • <strong>3x Bolos</strong> = Hitung 1x Alpa Tambahan.<br>
-            • <strong>Kehadiran 80% - 84%</strong>: Otomatis mendapat Pesan WhapsApp (Peringatan 1).<br>
-            • <strong>Kehadiran ≤ 79%</strong>: Otomatis mendapat Pesan WhapsApp (Peringatan Terakhir).
-        </div>
+       <div class="info-box">
+    <strong>Ketentuan Perhitungan:</strong><br>
+    • <strong>3x Absen Apel Pagi</strong> = Hitung 1x Alpa Tambahan (Tanpa akumulasi denda).<br>
+    • <strong>3x Bolos</strong> = Hitung 1x Alpa Tambahan (Tanpa akumulasi denda).<br>
+    • <strong>3x Absen Apel Pagi</strong> = Otomatis mendapat Pesan WhatsApp dari Sistem (Peringatan).<br>
+    • <strong>2x Alpa</strong> = Otomatis mendapat Pesan WhatsApp dari Sistem (Peringatan).<br>
+    • <strong>Kehadiran 80% - 84%</strong>: Otomatis mendapat Pesan WhatsApp dari Sistem (Peringatan).<br>
+    • <strong>Kehadiran ≤ 79%</strong>: Otomatis mendapat Pesan WhatsApp dari Sistem (Peringatan Terakhir).<br>
+    • 🏆 <strong>Guru Prestasi</strong>: Selalu Ikut Apel Pagi...Tidak Pernah Alpa...Tidak Pernah Bolos...Selalu Ikut Upacara Bendera...Tidak Pernah Dinas Luar...serta Sakit dan Ijin Maksimal 1x.
+</div>
     </div>
 
     <!-- TAB 3: DATABASE GURU & PEGAWAI -->
@@ -1146,6 +1149,118 @@ function switchTabManual(tabId){
         if(tabId === 'tab-rekap') renderRekap();
         if(tabId === 'tab-input') loadPresensiTanggal();
     }
+function tampilkanGuruPrestasi() {
+
+    const daftar = dbGuru.filter(g => {
+
+        if (g.jenisPTK !== "Guru") return false;
+
+        let apel = 0;
+let alpa = 0;
+let sakit = 0;
+let izin = 0;
+let bolos = 0;
+let upacara = 0;
+let dinasLuar = 0;
+
+        window.datesRekapAktif.forEach(tgl => {
+
+            const rec = dataPresensi[tgl]?.[g.id];
+            if (!rec) return;
+
+            if (rec.alpaApel) apel++;
+if (rec.status === "A") alpa++;
+if (rec.status === "S") sakit++;
+if (rec.status === "I") izin++;
+if (rec.bolos) bolos++;
+if (rec.tidakUpacara) upacara++;
+if (rec.status === "DL") dinasLuar++;
+
+        });
+
+       return apel === 0 &&
+       alpa === 0 &&
+       sakit <= 1 &&
+       izin <= 1 &&
+       bolos === 0 &&
+       upacara === 0 &&
+       dinasLuar === 0;
+
+    });
+
+    let html = `
+        <div style="
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,.5);
+            z-index:9999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        ">
+            <div style="
+                background:white;
+                width:90%;
+                max-width:600px;
+                max-height:80vh;
+                overflow:auto;
+                border-radius:12px;
+                padding:20px;
+            ">
+
+                <h2 style="margin-top:0;">
+                    🏆 Guru Prestasi
+                </h2>
+
+                <p>
+                    Guru yang memenuhi seluruh kriteria:
+                </p>
+
+                <ol>
+    `;
+
+    if (daftar.length === 0) {
+
+        html += `
+            <li>Tidak ada guru yang memenuhi kriteria.</li>
+        `;
+
+    } else {
+
+        daftar.forEach(g => {
+
+            html += `
+                <li style="margin-bottom:8px;">
+                    <b>${g.nama}</b>
+                </li>
+            `;
+
+        });
+
+    }
+
+    html += `
+                </ol>
+
+                <button
+                    onclick="this.closest('div[style*=fixed]').remove()"
+                    style="
+                        background:#374151;
+                        color:white;
+                        border:none;
+                        padding:8px 18px;
+                        border-radius:6px;
+                        cursor:pointer;
+                    ">
+                    Tutup
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML("beforeend", html);
+}
    function toggleDetail(btn, guruId){
 
     const detail = btn.nextElementSibling;
@@ -2052,12 +2167,59 @@ top:-2px;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:0.7
     <div class="angka">${dbGuru.filter(p => p.jenisPTK !== "Guru").length}</div>
     <div class="judul">Total Pegawai</div>
 </div>
-<div class="summary-card summary-indigo">
+<div class="summary-card summary-indigo" onclick="tampilkanGuruPrestasi()" style="cursor:pointer;">
     <div class="icon">👥</div>
     <div class="angka">
-        ${dbGuru.length}
-    </div>
-    <div class="judul">Total Guru & Pegawai</div>
+    ${dbGuru.filter(g => {
+        if (g.jenisPTK !== "Guru") return false;
+
+        let apel = 0;
+let alpa = 0;
+let sakit = 0;
+let izin = 0;
+let bolos = 0;
+let upacara = 0;
+let dinasLuar = 0;
+
+        window.datesRekapAktif.forEach(tgl => {
+            const rec = dataPresensi[tgl]?.[g.id];
+            if (!rec) return;
+
+            if (rec.alpaApel) apel++;
+            if (rec.status === "A") alpa++;
+            if (rec.status === "S") sakit++;
+            if (rec.status === "I") izin++;
+            if (rec.bolos) bolos++;
+            if (rec.tidakUpacara) upacara++;
+            if (rec.status === "DL") dinasLuar++;
+        });
+
+        return apel === 0 &&
+       alpa === 0 &&
+       sakit <= 1 &&
+       izin <= 1 &&
+       bolos === 0 &&
+       upacara === 0 &&
+       dinasLuar === 0;
+}).length}
+</div>
+    <div class="judul">Guru Prestasi</div>
+
+<div style="margin-top:8px;">
+    <button
+        onclick="event.stopPropagation(); tampilkanGuruPrestasi();"
+        style="
+            padding:5px 12px;
+            border:none;
+            border-radius:6px;
+            background:#4f46e5;
+            color:white;
+            cursor:pointer;
+            font-size:12px;
+        ">
+        👁️ Lihat Data
+    </button>
+</div>
 </div>
 
 <div class="summary-card summary-green">
