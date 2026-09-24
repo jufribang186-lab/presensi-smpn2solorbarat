@@ -1320,8 +1320,9 @@ Rp${dendaUpacara.toLocaleString('id-ID')}
 <hr>
 
 <div style="display:flex;justify-content:space-between;">
-<span>❌ Alpa</span>
-<b>${totalAlpa} × Rp20.000</b>
+<span>
+❌ Alpa</span>
+<b>${countAlpa} × Rp20.000</b>
 </div>
 
 <div style="text-align:right;color:#b91c1c;font-weight:bold;">
@@ -2132,7 +2133,7 @@ const totalAlpaBersih =
 const dendaApel = countAbsenApel * 5000;
 const dendaBolos = countB * 10000;
 const dendaUpacara = countUpacara * 15000;
-const dendaAlpa = Number(totalAlpaBersih || 0) * 20000;
+const dendaAlpa = Number(countA || 0) * 20000;
 
     const persen = Math.max(0, Math.round(((totalHariInput - totalAlpaBersih) / totalHariInput) * 100));
 let totalDenda =
@@ -2431,7 +2432,7 @@ Rp${dendaUpacara.toLocaleString('id-ID')}
 <br><br>
 
 Alpa :
-${totalAlpaBersih} × Rp20.000
+${countA} × Rp20.000
 <span style="float:right;font-weight:bold;">
 Rp${dendaAlpa.toLocaleString('id-ID')}
 </span><hr style="margin:6px 0;">
