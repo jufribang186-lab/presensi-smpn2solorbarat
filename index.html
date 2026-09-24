@@ -2199,11 +2199,12 @@ const adaPeringatan =
 if (persen <= 79) {
 
     jumlahSanksi++;
+
     totalDenda =
-    dendaApel +
-    dendaBolos +
-    dendaUpacara +
-    dendaAlpa;
+        dendaApel +
+        dendaBolos +
+        dendaUpacara +
+        dendaAlpa;
 
     cardStyle = 'border-left-color: #dc2626; background: #fef2f2;';
     percentStyle = 'percent-red';
@@ -2220,6 +2221,39 @@ color:#b91c1c;
 ">
 🔴 SANKSI
 </span>`;
+
+    if (g.wa) {
+
+        let cleanWA = g.wa.replace(/[^0-9]/g, '');
+
+        if (cleanWA.startsWith('0')) {
+            cleanWA = '62' + cleanWA.slice(1);
+        }
+
+        const msg = `Yth. Bapak/Ibu *${g.nama}*,
+
+Persentase kehadiran Anda saat ini: *${persen}%*.
+
+Anda telah masuk kategori *SANKSI*.
+
+💰 Total Denda Periode Berjalan: *Rp${totalDenda.toLocaleString('id-ID')}*
+
+Mohon berkoordinasi dengan Pimpinan sekolah.
+
+Terima Kasih.
+Admin`;
+
+        const waUrl =
+            `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
+
+        waBtnHtml = `<button
+type="button"
+class="btn-wa-mobile"
+style="background:#dc2626;border:none;cursor:pointer;"
+onclick="window.open('${waUrl}', '_blank')">
+📲 Kirim WA Sanksi
+</button>`;
+    }
 
 } else if (adaPeringatan) {
 
@@ -2267,12 +2301,12 @@ color:#b45309;
 
 Anda terdeteksi ${alasanPeringatan.join(' dan ')}.
 
+💰 Total Denda Periode Berjalan: *Rp${totalDenda.toLocaleString('id-ID')}*
+
 Tolong perbaiki kinerja Anda.
 
 Terima Kasih.
-Admin`;
-
-    const waUrl =
+Admin`;    const waUrl =
         `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
 
     waBtnHtml = `<button
