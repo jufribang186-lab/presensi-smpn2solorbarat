@@ -2179,12 +2179,29 @@ Konversi Apel  : ${alpaDariApel} hari
 
 -----------------------------
 - Total Alpa Dihitung: *${totalAlpaBersih} hari*
-- Total Hari Kerja: *${totalHariInput} hari*`;            if (persen <= 79) {
+- Total Hari Kerja: *${totalHariInput} hari*`;            
+
+// ======================================
+// PERINGATAN BERDASARKAN PELANGGARAN
+// ======================================
+
+const peringatanAlpa = countA >= 3;
+const peringatanApel = countAbsenApel >= 3;
+const peringatanUpacara = countUpacara >= 2;
+
+const adaPeringatan =
+    peringatanAlpa ||
+    peringatanApel ||
+    peringatanUpacara;
+
+if (persen <= 79) {
 
     jumlahSanksi++;
     totalDenda = 0;
+
     cardStyle = 'border-left-color: #dc2626; background: #fef2f2;';
     percentStyle = 'percent-red';
+
     statusBadge = `
 <span style="
 display:inline-block;
@@ -2197,33 +2214,14 @@ color:#b91c1c;
 ">
 🔴 SANKSI
 </span>`;
-                if (g.wa) {
-                    let cleanWA = g.wa.replace(/[^0-9]/g, '');
-                    if (cleanWA.startsWith('0')) cleanWA = '62' + cleanWA.slice(1);
 
-                    const msg = `Yth. Bapak/Ibu *${g.nama}*,
-
-Persentase kehadiran Anda saat ini adalah *${persen}%*.
-
-Anda terdeteksi telah mencapai persentase kehadiran di bawah *80%*.
-
-Sesuai kesepakatan SMPN 2 Solor Barat, Anda akan dikenakan sanksi sehingga *denda tidak berlaku lagi*.
-
-Silakan berkoordinasi dengan Pimpinan sekolah.
-
-Terima kasih.
-Admin`;
-                    
-                    const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
-                    waBtnHtml = `<button type="button" class="btn-wa-mobile" style="background:#dc2626;border:none;cursor:pointer;" onclick="window.open('${waUrl}', '_blank')">Kirim WA Sanksi (<=79%)</button>`;
-                }
-
-           } else if (persen >= 80 && persen <= 84) {
+} else if (adaPeringatan) {
 
     jumlahPeringatan++;
 
     cardStyle = 'border-left-color: #d97706; background: #fffbeb;';
-    percentStyle = 'background: #fef3c7; color: #d97706;';
+    percentStyle = 'background:#fef3c7;color:#d97706;';
+
     statusBadge = `
 <span style="
 display:inline-block;
@@ -2236,23 +2234,55 @@ color:#b45309;
 ">
 🟡 PERINGATAN
 </span>`;
-    if (g.wa) {
-        let cleanWA = g.wa.replace(/[^0-9]/g, '');
-        if (cleanWA.startsWith('0')) cleanWA = '62' + cleanWA.slice(1);
 
-        const msg = `Yth. Bapak/Ibu *${g.nama}*,\n\nInformasi Kehadiran SMPN 2 Solor Barat Periode (*${strStart} s/d ${strEnd}*):\n\nPersentase Kehadiran Anda saat ini: *${persen}%* (PERINGATAN).\n\n${rincianTeks}\n\nMohon agar dapat meningkatkan kehadiran Anda. Jika persentase turun hingga ≤79%, maka akan dikenakan sanksi sesuai kesepakatan. Terima kasih.
+   if (g.wa) {
+
+    let cleanWA = g.wa.replace(/[^0-9]/g, '');
+
+    if (cleanWA.startsWith('0')) {
+        cleanWA = '62' + cleanWA.slice(1);
+    }
+
+    let alasanPeringatan = [];
+
+    if (peringatanAlpa) {
+        alasanPeringatan.push(`Alpa sebanyak *${countA}x*`);
+    }
+
+    if (peringatanApel) {
+        alasanPeringatan.push(`tidak ikut Apel Pagi sebanyak *${countAbsenApel}x*`);
+    }
+
+    if (peringatanUpacara) {
+        alasanPeringatan.push(`tidak ikut Upacara Bendera sebanyak *${countUpacara}x*`);
+    }
+
+    const msg = `Yth. Bapak/Ibu *${g.nama}*,
+
+Anda terdeteksi ${alasanPeringatan.join(' dan ')}.
+
+Tolong perbaiki kinerja Anda.
+
+Terima Kasih.
 Admin`;
 
-        const waUrl = `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
-        waBtnHtml = `<button type="button" class="btn-wa-mobile" style="background:#d97706;border:none;cursor:pointer;" onclick="window.open('${waUrl}', '_blank')">Kirim WA Peringatan</button>`;
+    const waUrl =
+        `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
+
+    waBtnHtml = `<button
+type="button"
+class="btn-wa-mobile"
+style="background:#d97706;border:none;cursor:pointer;"
+onclick="window.open('${waUrl}', '_blank')">
+📲 Kirim WA Peringatan
+</button>`;
     }
 
 } else {
 
     jumlahAman++;
 
-}
-            totalGuruDashboard++;
+}            totalGuruDashboard++;
 
 totalApelDashboard += countAbsenApel;
 totalBolosDashboard += countB;
