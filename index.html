@@ -1059,6 +1059,25 @@ renderDatabase();
         if(pendingConfirmAction) pendingConfirmAction();
         closeModal();
     }
+function kirimWAPeringatan(idGuru, waUrl) {
+
+    window.open(waUrl, '_blank');
+
+    localStorage.setItem(
+        "wa_peringatan_dikirim_" + idGuru,
+        "1"
+    );
+
+    const card = document.querySelector(
+        `.rekap-card[data-guru-id="${idGuru}"]`
+    );
+
+    if (card) {
+        const kotak = card.querySelector('[data-wa-peringatan]');
+        if (kotak) kotak.style.display = 'none';
+    }
+
+}
    function loginGuru(){
 
     userRole = "guru";
@@ -1101,7 +1120,8 @@ function loginPimpinan(){
         }
     );
 
-}function logoutAplikasi(){
+}
+function logoutAplikasi(){
 
     localStorage.removeItem(KEY_ROLE);
 
@@ -2472,13 +2492,17 @@ Terima Kasih.
 Admin`;    const waUrl =
         `https://wa.me/${cleanWA}?text=${encodeURIComponent(msg)}`;
 
+    if (!localStorage.getItem("wa_peringatan_dikirim_" + g.id)) {
+
     waBtnHtml = `<button
 type="button"
 class="btn-wa-mobile"
 style="background:#d97706;border:none;cursor:pointer;"
-onclick="window.open('${waUrl}', '_blank')">
+onclick="kirimWAPeringatan(${g.id}, '${waUrl}')">
 📲 Kirim WA Peringatan
 </button>`;
+
+}
     }
 
 } else {
@@ -2666,7 +2690,29 @@ Denda tidak berlaku lagi dan Anda akan dikenakan sanksi sesuai kesepakatan sekol
     )
 
 )
-}        <div style="text-align:center;margin-top:10px;">
+}        
+<div style="text-align:center;margin-top:10px;">
+
+    ${userRole === "guru" &&
+  adaPeringatan &&
+  persen > 79 &&
+  !localStorage.getItem("wa_peringatan_dikirim_" + g.id) ? `
+<div data-wa-peringatan style="
+    margin:10px 0;
+    padding:10px 12px;
+    background:#fff7ed;
+    border:1px solid #f59e0b;
+    border-radius:8px;
+    color:#b45309;
+    font-size:12px;
+    font-weight:bold;
+    text-align:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.08);
+">
+    🟡 Anda akan segera menerima Pesan WA secara Otomatis dari Sistem.
+</div>
+` : ''}
+
     <button
     class="btn-detail"
     onclick="toggleDetail(this, ${g.id})">
@@ -2676,7 +2722,7 @@ Denda tidak berlaku lagi dan Anda akan dikenakan sanksi sesuai kesepakatan sekol
 <div class="detail-kehadiran" style="display:none;"></div>
 </div>
             `;
-// Simpan data ranking
+// Simpan data ranking 
 
 const skorDisiplin =
     (persen * 1000) -
